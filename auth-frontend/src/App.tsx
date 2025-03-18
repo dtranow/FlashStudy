@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import './App.css'
 import Login from './pages/Login'
@@ -6,8 +7,22 @@ import Homepage from './pages/Homepage'
 import Dashboard from './pages/Dashboard'
 import PrivateRoute from './components/PrivateRoute'
 import Navbar from './components/Navbar'
+import CreateDeck from "./pages/CreateDeck"
+import AddFlashcards from "./pages/AddFlashcards"
+import Studycards from "./pages/Studycards"
 
 function App() {
+  const [isOpen, setIsOpen] = useState<boolean>(true)
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen)
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('token')
+    window.location.href = '/'
+  }
+
   return (
     <Router>
       <Routes>
@@ -28,7 +43,10 @@ function App() {
           </>
         }/>
         <Route element={<PrivateRoute />}>
-          <Route path="/dashboard" element={<Dashboard />}/>
+          <Route path="/dashboard" element={<Dashboard isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
+          <Route path="/create-deck" element={<CreateDeck isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
+          <Route path="/add-flashcards" element={<AddFlashcards isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
+          <Route path="/studycards" element={<Studycards isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
         </Route>
       </Routes>
     </Router>

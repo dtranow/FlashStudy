@@ -1,54 +1,51 @@
-import React, { useState } from 'react'
-import { VscArrowRight, VscArrowLeft } from 'react-icons/vsc'
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import '../Dashboard.css'
 import FeatureCards from '../components/FeatureCards'
+import Sidebar from '../components/Sidebar'
 
 const features = [
-  { title: "Create Deck"},
-  { title: "Add Flashcards"},
-  { title: "Study Flashcards"}
+  { title: "Create Deck", description: "Build custom flashcard decks to organize your study material."},
+  { title: "Add Flashcards", description: "Add new flashcards with terms and definitions to your existing decks."},
+  { title: "Study Flashcards", description: "Review your flashcards for memorization through repetition."}
 ]
 
-const Dashboard: React.FC = () => {
-  const [isOpen, setIsOpen] = useState<boolean>(true)
+interface props {
+  isOpen: boolean;
+  toggleSidebar: () => void;
+  handleLogout: () => void;
+}
 
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen)
-  }
+const Dashboard: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
+  
+  const nav = useNavigate()
 
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    window.location.href = '/'
-  }
-
-  const handleCardClick = () => {
-
+  const handleCardClick = (index: number) => {
+    switch(index) {
+      case 0:
+        nav('/create-deck')
+        break
+      case 1:
+        nav('/add-flashcards')
+        break  
+      case 2:
+        nav('/studycards')
+        break
+      default:
+        break
+    }
   }
 
   return (
     <div className='dashboard-container'>
-      <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
-
-        <button className='close-btn' onClick={toggleSidebar}>{isOpen ? <VscArrowLeft/> : <VscArrowRight/>}</button>
-        <div className='user-info'>
-          <h2>name</h2>
-          <p>_ flashcards created!</p>
-        </div>
-        <nav className='flashcard-list'>
-          <ul>
-            <li>flashcards deck 1</li>
-            <li>flashcards deck 2</li>
-          </ul>
-        </nav>
-        <button className='log-out' onClick={handleLogout}>Logout</button>
-      </div>
+      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>
       <div className='main-content'>
         <div className='dashboard-intro'>
           <h1>Welcome to your Flashcard Dashboard!</h1>
           <p>Create a new deck, add flashcards to an existing deck, or start studying now!</p>
           <div className='dashboard-cards'>
             {features.map((feature, index) => (
-              <FeatureCards className='feature-cards' key={index} title={feature.title} onClick={handleCardClick} />
+              <FeatureCards className='feature-cards' key={index} title={feature.title} description={feature.description} onClick={() => handleCardClick(index)} />
             ))}
           </div>
         </div>
