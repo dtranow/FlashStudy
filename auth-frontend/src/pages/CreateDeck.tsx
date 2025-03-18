@@ -17,9 +17,26 @@ const CreateDeck: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) =>
     nav('/dashboard')
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    if(deckName === "") return
+
+    const token = localStorage.getItem('token')
+    const res = await fetch("http://localhost:5000/api/decks", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ name: deckName})
+    })
+    if(res.ok){
+      nav('/add-flashcards')
+    }
+    else{
+      console.error("Failed to create deck")
+    }
   }
 
   return (
