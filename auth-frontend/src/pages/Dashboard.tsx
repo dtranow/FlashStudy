@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../Dashboard.css'
 import FeatureCards from '../components/FeatureCards'
@@ -7,7 +7,7 @@ import axios from 'axios'
 
 
 interface Deck {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   lastOpened: number;
@@ -61,7 +61,7 @@ const Dashboard: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => 
           <div className='dashboard-cards'>
               <FeatureCards className='feature-cards create-deck-card' title="Create Deck" description="Build custom flashcard decks to organize your study material." onClick={() => nav('/create-deck')} />
               {decks.map((deck) => (
-                <FeatureCards key={deck.id} className='feature-card' title={deck.name} description={deck.description} onClick={() => handleDeckClick(deck.id)}/>
+                <FeatureCards key={deck._id} className='feature-card' title={deck.name} description={deck.description} onClick={() => handleDeckClick(deck._id)}/>
               ))}
           </div>
         </div>

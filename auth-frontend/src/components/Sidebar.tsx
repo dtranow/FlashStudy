@@ -11,9 +11,9 @@ interface props {
 }
 
 interface Deck {
-  id: string;
+  _id: string;
   name: string;
-  progress: number;
+  progress: number; //add completed cards later and then / by total cards in deck
 }
 
 const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
@@ -21,14 +21,18 @@ const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   const [name, setName] = useState<string>('')
   const jwt = localStorage.getItem('token')
   const headers = jwt ? { Authorization: `Bearer ${jwt}` } : {}; 
-  // testing this headers bc backend not working check console
 
   const fetchDecks = async () => {
     try {
       const res = await axios.get('http://localhost:5000/api/decks', {headers}
       )
       if(Array.isArray(res.data)){
-        setDecks(res.data)
+        const formatDecks = res.data.map(deck => ({
+          _id: deck._id,
+          name: deck.name,
+          progress: 50
+        }))
+        setDecks(formatDecks)
       }
       else{
         setDecks([])
@@ -42,7 +46,6 @@ const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   const fetchName = async () => {
     try {
       const res = await axios.get('http://localhost:5000/api/auth/profile', {headers})
-      console.log(res.data)
       setName(res.data.user?.name)
     }
     catch(error) {
