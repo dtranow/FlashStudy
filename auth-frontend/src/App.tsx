@@ -8,8 +8,7 @@ import Dashboard from './pages/Dashboard'
 import PrivateRoute from './components/PrivateRoute'
 import Navbar from './components/Navbar'
 import CreateDeck from "./pages/CreateDeck"
-import AddFlashcards from "./pages/AddFlashcards"
-import Studycards from "./pages/Studycards"
+import DeckPage from "./pages/DeckPage"
 
 function App() {
   const [isOpen, setIsOpen] = useState<boolean>(true)
@@ -45,8 +44,9 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
           <Route path="/create-deck" element={<CreateDeck isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
-          <Route path="/add-flashcards" element={<AddFlashcards isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
-          <Route path="/studycards" element={<Studycards isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
+          <Route path="/deckpage/:deckId" element={<DeckPage isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
+          <Route path="/deckpage/:deckId/add" element={<DeckPage isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
+          <Route path="/deckpage/:deckId/study" element={<DeckPage isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
         </Route>
       </Routes>
     </Router>

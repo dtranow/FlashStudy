@@ -19,7 +19,7 @@ const SidebarDeckList: React.FC<props> = ({ decks }) => {
         <p>No decks available</p>
       ) : (
         decks.map((deck, index) => (
-          <Link to={`/studycards/${deck.id}`}>
+          <Link to={`/deckpage/${deck.id}`}>
             <div key={deck.id}>
               <p>{deck.name}</p>
               <LinearProgress variant='determinate' value={deck.progress}></LinearProgress>

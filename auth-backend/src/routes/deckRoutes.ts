@@ -5,13 +5,13 @@ import Deck from "../models/deckModel"
 const router = express.Router()
 
 router.post('/', authMiddleware, async (req: AuthRequest, res: Response) => {
-    const { name } = req.body
+    const { name, description } = req.body
 
     if(!req.user){
         res.status(401).json({ message: "unauthorized user" })
     }
     try {
-        const newDeck = new Deck({ name, user: req.user})
+        const newDeck = new Deck({ name, description, user: req.user})
         await newDeck.save()
         res.status(201).json(newDeck)
     }
@@ -50,12 +50,12 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
 
 router.put('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
     const { id } = req.params
-    const { name } = req.body
+    const { name, description } = req.body
     
     try{
         const updatedDeck = await Deck.findOneAndUpdate(
             { _id: id, user: req.body._id },
-            { name },
+            { name, description },
             { new: true }
         )
         if(!updatedDeck){

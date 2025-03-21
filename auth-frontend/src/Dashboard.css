@@ -61,6 +61,7 @@
 
 .main-content {
     flex-grow: 1;
+    min-width: 500px;
     margin-left: 250px;
     padding: 40px;
     background-color: #dfdfdf;
@@ -126,9 +127,9 @@
 
   .flashcard-form {
     width: 80%;
-    max-width: 400px;
-    min-height: 200px;
-    max-height: 400px;
+    max-width: 500px;
+    min-height: 300px;
+    max-height: 500px;
     margin: 20px auto;
     padding: 20px;
     background-color: white;
@@ -159,4 +160,37 @@
   
   .create-deck-btn:hover {
     background-color: #004186;
+  }
+
+  .input-wrapper {
+    position: relative;
+    width: 100%;
+    margin: 25px 0;
+  }
+
+  .flashcard-form p {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: left;
+  }
+  
+  .deck-description {
+    width: 90%;
+    height: 150px;
+    padding: 10px;
+    font-size: 16px;
+    line-height: 1.5;
+    resize: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: left;
+    vertical-align: top;
+  }
+  
+  .char-count {
+    position: absolute;
+    bottom: 5px;
+    right: 14px;
+    font-size: 12px;
+    color: gray;
   }

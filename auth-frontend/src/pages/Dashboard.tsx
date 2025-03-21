@@ -1,15 +1,17 @@
-import React from 'react'
+import React, { useState, useEffect, use } from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../Dashboard.css'
 import FeatureCards from '../components/FeatureCards'
 import Sidebar from '../components/Sidebar'
+import axios from 'axios'
 
-const features = [
-  { title: "Create Deck", description: "Build custom flashcard decks to organize your study material."},
-  { title: "Add Flashcards", description: "Add new flashcards with terms and definitions to your existing decks."},
-  { title: "Study Flashcards", description: "Review your flashcards for memorization through repetition."}
-]
 
+interface Deck {
+  id: string;
+  name: string;
+  description: string;
+  lastOpened: number;
+}
 interface props {
   isOpen: boolean;
   toggleSidebar: () => void;
@@ -17,23 +19,36 @@ interface props {
 }
 
 const Dashboard: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
-  
+  const [decks, setDecks] = useState<Deck[]>([])
   const nav = useNavigate()
 
-  const handleCardClick = (index: number) => {
-    switch(index) {
-      case 0:
-        nav('/create-deck')
-        break
-      case 1:
-        nav('/add-flashcards')
-        break  
-      case 2:
-        nav('/studycards')
-        break
-      default:
-        break
+  const fetchDecks = async () => {
+    try{
+      const jwt = localStorage.getItem('token')
+      const res = await axios.get('http://localhost:5000/api/decks', {
+        headers: { Authorization: `Bearer ${jwt}`}
+      })
+      if(Array.isArray(res.data)){
+        setDecks(res.data)
+      }
+      else{
+        setDecks([])
+      }
     }
+    catch(error) {
+      console.error("Failed to fetch decks ", error)
+    }
+  }
+
+  useEffect(() => {
+    fetchDecks()
+  }, [])
+
+  const handleDeckClick = (deckId: string) => {
+    const recentDecks = JSON.parse(localStorage.getItem("recentDecks") || "{}")
+    recentDecks[deckId] = Date.now()
+    localStorage.setItem("recentDecks", JSON.stringify(recentDecks))
+    nav(`/deckpage/${deckId}`)
   }
 
   return (
@@ -44,9 +59,10 @@ const Dashboard: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => 
           <h1>Welcome to your Flashcard Dashboard!</h1>
           <p>Create a new deck, add flashcards to an existing deck, or start studying now!</p>
           <div className='dashboard-cards'>
-            {features.map((feature, index) => (
-              <FeatureCards className='feature-cards' key={index} title={feature.title} description={feature.description} onClick={() => handleCardClick(index)} />
-            ))}
+              <FeatureCards className='feature-cards create-deck-card' title="Create Deck" description="Build custom flashcard decks to organize your study material." onClick={() => nav('/create-deck')} />
+              {decks.map((deck) => (
+                <FeatureCards key={deck.id} className='feature-card' title={deck.name} description={deck.description} onClick={() => handleDeckClick(deck.id)}/>
+              ))}
           </div>
         </div>
       </div>

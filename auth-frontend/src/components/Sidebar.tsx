@@ -18,13 +18,15 @@ interface Deck {
 
 const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   const [decks, setDecks] = useState<Deck[]>([])
+  const [name, setName] = useState<string>('')
   const jwt = localStorage.getItem('token')
+  const headers = jwt ? { Authorization: `Bearer ${jwt}` } : {}; 
+  // testing this headers bc backend not working check console
 
   const fetchDecks = async () => {
     try {
-      const res = await axios.get("/api/decks", {
-        headers: { Authorization: `Bearer ${jwt}`}
-      })
+      const res = await axios.get('http://localhost:5000/api/decks', {headers}
+      )
       if(Array.isArray(res.data)){
         setDecks(res.data)
       }
@@ -37,15 +39,27 @@ const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
     }
   }
 
+  const fetchName = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/api/auth/profile', {headers})
+      console.log(res.data)
+      setName(res.data.user?.name)
+    }
+    catch(error) {
+      console.error("Failed to fetch name ", error)
+    }
+  }
+
   useEffect(() => {
     fetchDecks()
+    fetchName()
   }, [])
   
   return (
       <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
         <button className='close-btn' onClick={toggleSidebar}>{isOpen ? <VscArrowLeft/> : <VscArrowRight/>}</button>
         <div className='user-info'>
-          <h2>name</h2>
+          <h2>{name}</h2>
           <p>_ flashcards created!</p>
         </div>
         <nav className='flashcard-list'>
