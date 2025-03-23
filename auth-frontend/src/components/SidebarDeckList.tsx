@@ -10,16 +10,17 @@ interface Deck {
 
 interface props {
   decks: Deck[];
+  onDeckClick: (deckId: string) => void;
 }
 
-const SidebarDeckList: React.FC<props> = ({ decks }) => {
+const SidebarDeckList: React.FC<props> = ({ decks, onDeckClick }) => {
   return (
     <div>
       {decks.length === 0 ? (
         <p>No decks available</p>
       ) : (
         decks.map((deck) => (
-          <Link to={`/deckpage/${deck._id}`} key={deck._id}>
+          <Link to={`/deckpage/${deck._id}`} key={deck._id} onClick={() => onDeckClick(deck._id)}>
             <div>
               <p>{deck.name}</p>
               <LinearProgress variant='determinate' value={deck.progress}></LinearProgress>

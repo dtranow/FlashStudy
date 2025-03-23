@@ -8,6 +8,7 @@ interface props {
     isOpen: boolean;
     toggleSidebar: () => void;
     handleLogout: () => void;
+    onDeckClick?: (deckId: string) => void;
 }
 
 interface Deck {
@@ -16,7 +17,7 @@ interface Deck {
   progress: number; //add completed cards later and then / by total cards in deck
 }
 
-const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
+const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, onDeckClick }) => {
   const [decks, setDecks] = useState<Deck[]>([])
   const [name, setName] = useState<string>('')
   const jwt = localStorage.getItem('token')
@@ -66,7 +67,7 @@ const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
           <p>_ flashcards created!</p>
         </div>
         <nav className='flashcard-list'>
-          <SidebarDeckList decks={decks || []} />
+          <SidebarDeckList decks={decks || []} onDeckClick={onDeckClick}/>
         </nav>
         <button className='log-out' onClick={handleLogout}>Logout</button>
       </div>  

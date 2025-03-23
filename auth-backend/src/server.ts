@@ -4,6 +4,7 @@ import cors from 'cors'
 import mongoose from 'mongoose'
 import authRoutes from './routes/routes'
 import deckRoutes from './routes/deckRoutes'
+import cardRoutes from './routes/flashCardRoutes'
 
 const app = express();
 app.use(express.json());
@@ -15,6 +16,7 @@ app.use(cors({
 }))
 app.use('/api/auth', authRoutes)
 app.use('/api/decks', deckRoutes)
+app.use('/api/flashCards', cardRoutes)
 
 dotenv.config()
 

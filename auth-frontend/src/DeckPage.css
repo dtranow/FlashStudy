@@ -1,0 +1,35 @@
+.btn-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .back-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: #1976d2; /* Blue */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .del-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: #d32f2f; /* Red */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  

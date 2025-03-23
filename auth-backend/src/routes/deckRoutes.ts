@@ -12,13 +12,14 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response) => {
         return
     }
     try {
-        const count = await Deck.countDocuments({ user: req.user._id })
+        const count = await Deck.countDocuments({ user: req.user.userID })
         if(count >= 10){
             res.status(400).json({ message: "You have reached the limit of 10 decks"})
             return
         }
 
-        const newDeck = new Deck({ name, description, user: req.user._id})
+        const newDeck = new Deck({ name, description, user: req.user.userID})
+        console.log("req.user", req.user)
         await newDeck.save()
         res.status(201).json(newDeck)
     }
@@ -34,7 +35,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
     }
 
     try {
-        const decks = await Deck.find({ user: req.user._id })
+        const decks = await Deck.find({ user: req.user.userID })
         res.json(decks)
     }
     catch(error){
@@ -45,12 +46,12 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
 router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
     const { id } = req.params
     try {
-        const deck = await Deck.findOne({ _id: id, user: req.user._id })
+        const deck = await Deck.findOne({ _id: id, user: req.user.userID }).populate('flashcards')
         if(!deck){
             res.status(404).json({ message: "Deck not found" })
             return
         }
-        if(deck?.user?.toString() !== req.user._id){
+        if(deck?.user?.toString() !== req.user.userID){
             res.status(403).json({ message: "Unauthorized access to this deck"})
             return
         }
@@ -67,7 +68,7 @@ router.put('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
     
     try{
         const updatedDeck = await Deck.findOneAndUpdate(
-            { _id: id, user: req.user._id },
+            { _id: id, user: req.user.userID },
             { name, description },
             { new: true }
         )
@@ -85,7 +86,7 @@ router.put('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
 router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
     const { id } = req.params
     try {
-        const deck = await Deck.findOneAndDelete({ _id: id, user: req.user._id })
+        const deck = await Deck.findOneAndDelete({ _id: id, user: req.user.userID })
         if(!deck){
             res.status(404).json({ message: "Deck not found" })
             return

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const deckSchema = new mongoose.Schema({
     name: { type: String, required: true},
     description: { type: String, default: ""},
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', require: true},
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
     flashcards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Flashcard'}] 
 },{ timestamps: true })
 
