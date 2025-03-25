@@ -67,7 +67,7 @@ const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, onDeckC
           <p>_ flashcards created!</p>
         </div>
         <nav className='flashcard-list'>
-          <SidebarDeckList decks={decks || []} onDeckClick={onDeckClick}/>
+          <SidebarDeckList decks={decks || []} onDeckClick={onDeckClick ?? (() => {})}/>
         </nav>
         <button className='log-out' onClick={handleLogout}>Logout</button>
       </div>  

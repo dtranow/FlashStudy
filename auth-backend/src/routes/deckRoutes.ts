@@ -1,6 +1,7 @@
 import express, { Response } from "express"
 import authMiddleware, { AuthRequest } from '../middleware'
 import Deck from "../models/deckModel"
+import Flashcard from "../models/flashcardModel"
 
 const router = express.Router()
 
@@ -86,6 +87,7 @@ router.put('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
 router.delete('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
     const { id } = req.params
     try {
+        await Flashcard.deleteMany({ deck: id})
         const deck = await Deck.findOneAndDelete({ _id: id, user: req.user.userID })
         if(!deck){
             res.status(404).json({ message: "Deck not found" })

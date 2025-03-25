@@ -44,4 +44,19 @@ router.get('/:deckId', authMiddleWare, async (req: AuthRequest, res: Response) =
     }
 })
 
+router.delete('/:deckId/:flashcardId', authMiddleWare, async (req: AuthRequest, res: Response) => {
+    try{
+        const { deckId, flashcardId } = req.params
+        await Flashcard.findByIdAndDelete(flashcardId)
+
+        await Deck.findByIdAndUpdate(deckId, {
+            $pull: {flashcards: flashcardId}
+        })
+        res.status(200).json({ message: "Flashcard deleted"})
+    }
+    catch(error){
+        res.status(500).json({ message: "Failed to delete flashcard"})
+    }
+}) 
+
 export default router

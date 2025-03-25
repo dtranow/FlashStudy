@@ -17,6 +17,7 @@ interface Deck {
 interface Flashcard {
   question: string;
   answer: string;
+  _id: string;
 }
 
 interface props {
@@ -53,14 +54,19 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
 
   const fetchFlashcards = async () => {
     try{
+      setLoading(true)
       const jwt = localStorage.getItem('token')
       const res = await axios.get(`http://localhost:5000/api/decks/${deckId}`, {
         headers: { Authorization: `Bearer ${jwt}`}
       })
+      console.log(res.data)
       setFlashcards(res.data.flashcards)
     }
     catch(error) {
       console.error("Failed to fetch flashcards", error)
+    }
+    finally{
+      setLoading(false)
     }
   }
 
@@ -122,6 +128,43 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
     }
   }
 
+  const handleDeleteFlashcard = async () => {
+    try{
+      const jwt = localStorage.getItem('token')
+      const flashcardId = flashcards[currentIndex]._id
+      await axios.delete(`http://localhost:5000/api/flashcards/${deckId}/${flashcardId}`,{
+        headers: { Authorization: `Bearer ${jwt}`}
+      })
+      setFlashcards(prev => prev.filter((_, index) => index !== currentIndex))
+      setCurrentIndex(prev => (prev > 0 ? prev - 1 : 0))
+    }
+    catch(error) {
+      console.error("Failed to delete flashcard", error)
+    }
+  }
+
+  const handleDeleteDeck = async () => {
+    try{
+      const jwt = localStorage.getItem('token')
+      await axios.delete(`http://localhost:5000/api/decks/${deckId}`, {
+        headers: {"Authorization": `Bearer ${jwt}`}
+      })
+    }
+    catch(error){
+      console.error("Failed to delete deck", error)
+    }
+  }
+
+  const handleDelete = async (e: React.MouseEvent<SVGSVGElement>) => {
+    e.stopPropagation()
+    if(mode === 'study' && flashcards.length > 0){
+      handleDeleteFlashcard()
+    }
+    else{
+      handleDeleteDeck()
+    }
+  }
+
   return (
     <div className='dashboard-container'>
       <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout} onDeckClick={handleSidebarClick}/>
@@ -171,7 +214,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                 <ArrowForwardIcon />
               </button>
             </div>
-            <div>{currentIndex + 1} / {flashcards.length}</div>
+            <div>{flashcards.length > 0 ? currentIndex + 1: 0} / {flashcards.length}</div>
           </>
         )}
         <div className='btn-container'>
@@ -179,7 +222,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
             <ArrowBackIcon />
           </button>
           <button className='del-btn'>
-            <DeleteIcon />
+            <DeleteIcon onClick={handleDelete}/>
           </button>
         </div>
       </div>
