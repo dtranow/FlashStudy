@@ -5,7 +5,9 @@ import axios from 'axios'
 import FeatureCards from '../components/FeatureCards';
 import '../DeckPage.css'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import DeleteIcon from '@mui/icons-material/Delete';
+import Flashcard from '../components/Flashcard';
 
 interface Deck {
   _id: string;
@@ -29,6 +31,9 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   const [mode, setMode] = useState<'default' | 'add' | 'study'>('default')
   const [cardName, setCardName] = useState<string>('')
   const [flashcardDescription, setFlashcardDescription] = useState<string>('')
+  const [currentIndex, setCurrentIndex] = useState<number>(0)
+  const [flipped, setFlipped] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const nav = useNavigate()
   const { deckId } = useParams<{ deckId: string}>()
@@ -67,6 +72,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   useEffect(() => {
     if(mode === 'study'){
       fetchFlashcards()
+      setCurrentIndex(0)
     }
   }, [mode, deckId])
 
@@ -102,6 +108,19 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
     nav(`/deckpage/${deckId}`)
   }
 
+  const handlePrev = () => {
+    if(currentIndex > 0){
+      setCurrentIndex(currentIndex - 1)
+      setFlipped(false)
+    }
+  }
+
+  const handleNext = () => {
+    if(currentIndex < flashcards.length-1){
+      setCurrentIndex(currentIndex + 1)
+      setFlipped(false)
+    }
+  }
 
   return (
     <div className='dashboard-container'>
@@ -135,11 +154,24 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
         )}
         {mode === 'study' && (
           <>
-            <div>
-              {flashcards.map((flashcard, index) => (
-                <div key={index}>{flashcard.question} {flashcard.answer} {index}</div>
-              ))}
+            <div className='flashcard-container'>
+              {loading ? (
+                <p>Loading flashcards...</p>
+              ) : flashcards.length > 0 ? (
+                <Flashcard question={flashcards[currentIndex].question} answer={flashcards[currentIndex].answer} flipped={flipped} setFlipped={setFlipped}></Flashcard>
+              ) : (
+               <p>no flashcards available</p> 
+              )}
             </div>
+            <div className='flashcard-nav'>
+              <button onClick={handlePrev} disabled={currentIndex === 0}>
+                <ArrowBackIcon />
+              </button>
+              <button onClick={handleNext} disabled={currentIndex === flashcards.length-1}>
+                <ArrowForwardIcon />
+              </button>
+            </div>
+            <div>{currentIndex + 1} / {flashcards.length}</div>
           </>
         )}
         <div className='btn-container'>
