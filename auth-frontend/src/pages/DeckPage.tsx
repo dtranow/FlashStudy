@@ -35,6 +35,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const [flipped, setFlipped] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+  const [refresh, setRefresh] = useState<boolean>(false)
 
   const nav = useNavigate()
   const { deckId } = useParams<{ deckId: string}>()
@@ -149,6 +150,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
       await axios.delete(`http://localhost:5000/api/decks/${deckId}`, {
         headers: {"Authorization": `Bearer ${jwt}`}
       })
+      setRefresh(true) //not working still need to refresh the sidebar when deleting deck
     }
     catch(error){
       console.error("Failed to delete deck", error)
@@ -167,7 +169,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
 
   return (
     <div className='dashboard-container'>
-      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout} onDeckClick={handleSidebarClick}/>
+      <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout} onDeckClick={handleSidebarClick} refresh={refresh} setRefresh={setRefresh}/>
       <div className='main-content'>
         <button onClick={handleHome}>Home</button>
         {mode === 'default' && (
