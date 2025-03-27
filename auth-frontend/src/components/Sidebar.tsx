@@ -9,8 +9,6 @@ interface props {
     toggleSidebar: () => void;
     handleLogout: () => void;
     onDeckClick?: (deckId: string) => void;
-    refresh: boolean;
-    setRefresh: (refresh: boolean) => void
 }
 
 interface Deck {
@@ -19,7 +17,7 @@ interface Deck {
   progress: number; //add completed cards later and then / by total cards in deck
 }
 
-const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, onDeckClick, refresh, setRefresh }) => {
+const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, onDeckClick }) => {
   const [decks, setDecks] = useState<Deck[]>([])
   const [name, setName] = useState<string>('')
   const jwt = localStorage.getItem('token')
@@ -36,9 +34,6 @@ const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, onDeckC
           progress: 50
         }))
         setDecks(formatDecks)
-        if(refresh === true){
-          setRefresh(false)
-        }
       }
       else{
         setDecks([])
@@ -64,9 +59,6 @@ const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, onDeckC
     fetchName()
   }, [])
 
-  useEffect(() => {
-    fetchDecks()
-  }, [refresh])  //not working still need to refresh the sidebar when deleting deck
   
   return (
       <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>

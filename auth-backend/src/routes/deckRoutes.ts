@@ -20,7 +20,6 @@ router.post('/', authMiddleware, async (req: AuthRequest, res: Response) => {
         }
 
         const newDeck = new Deck({ name, description, user: req.user.userID})
-        console.log("req.user", req.user)
         await newDeck.save()
         res.status(201).json(newDeck)
     }

@@ -133,6 +133,30 @@
   .back-btn:hover, .del-btn:hover {
     background-color: #bbb;
   }
+
+  .edit-btn {
+    background: #1976d2;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    display: block;
+    margin: 10px auto;
+  }
+  
+  .edit-btn:hover {
+    background: #145a9e;
+  }
+  
+  .edit-input {
+    width: 90%;
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
   
   @media (max-width: 500px) {
     .deck-options {

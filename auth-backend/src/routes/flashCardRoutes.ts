@@ -45,10 +45,12 @@ router.get('/:deckId', authMiddleWare, async (req: AuthRequest, res: Response) =
 
 router.put('/:deckId/:flashcardId', authMiddleWare, async (req: AuthRequest, res: Response) => {
     try{
-        const {deckId, flashcardId} = req.params
+        const { flashcardId } = req.params
         const {question, answer} = req.body
-        await Flashcard.findByIdAndUpdate(flashcardId)
-
+        const updatedflashcard = await Flashcard.findByIdAndUpdate(flashcardId, 
+            { question, answer},
+            { new: true})
+        res.status(200).json(updatedflashcard)
     }
     catch(error){
         res.status(500).json({ message: "Failed to update flashcard"})

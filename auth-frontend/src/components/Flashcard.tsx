@@ -1,27 +1,63 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import '../DeckPage.css'
 
 interface props {
+  ID: string;
   question: string;
   answer: string;
   flipped: boolean;
   setFlipped: (flipped: boolean) => void
+  onSave: (updatedQuestion: string, updatedAnswer: string) => void
 }
 
-const Flashcard: React.FC<props> = ({ question, answer, flipped, setFlipped}) => {
+const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, onSave}) => {
+  const [edit, setEdit] = useState<boolean>(false)
+  const [newQuestion ,setNewQuestion] = useState<string>(question)
+  const [newAnswer, setNewAnswer] = useState<string>(answer)
 
   const handleFlip = () => {
-    setFlipped(!flipped)
-  }  
+    if(!edit){
+      setFlipped(!flipped)
+    }
+  } 
+
+  const handleSave = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    if(edit){
+      onSave(newQuestion, newAnswer)
+    }
+    setEdit(!edit)
+  }
+
+  useEffect(() => {
+    setNewQuestion(question);
+    setNewAnswer(answer);
+  }, [ID]);
 
   return (
-    <div className={`flashcard ${flipped? 'flipped' : ''}`} onClick={handleFlip}>
-      <div className='flashcard-inner'>
-        <div className='flashcard-front'>
-          <p>{question}</p>
-        </div>
-        <div className='flashcard-back'>
-          <p>{answer}</p>
+    <div className='flashcard-container'>
+      <button className="edit-btn" onClick={handleSave}>{edit ? "Save" : "Edit"}</button>
+      <div className={`flashcard ${flipped? 'flipped' : ''}`} onClick={handleFlip}>
+        <div className='flashcard-inner'>
+          {edit ? (
+            <>
+              <div className='flashcard-front'>
+                <input value={newQuestion} onChange={(e) => setNewQuestion(e.target.value)}/>
+              </div>
+              <div className='flashcard-back'>
+                <input value={newAnswer} onChange={(e) => setNewAnswer(e.target.value)}/>
+              </div>
+            </>
+          ): (
+            <>
+              <div className='flashcard-front'>
+                <p>{question}</p>
+              </div>
+              <div className='flashcard-back'>
+                <p>{answer}</p>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

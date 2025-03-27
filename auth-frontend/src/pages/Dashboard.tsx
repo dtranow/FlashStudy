@@ -16,10 +16,9 @@ interface props {
   isOpen: boolean;
   toggleSidebar: () => void;
   handleLogout: () => void;
-  deleteDeck: boolean;
 }
 
-const Dashboard: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, deleteDeck }) => {
+const Dashboard: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   const [decks, setDecks] = useState<Deck[]>([])
   const nav = useNavigate()
 

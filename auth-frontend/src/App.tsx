@@ -12,7 +12,6 @@ import DeckPage from "./pages/DeckPage"
 
 function App() {
   const [isOpen, setIsOpen] = useState<boolean>(true)
-  const [deleteDeck, setDeleteDeck] = useState<boolean>(false)
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen)
@@ -43,7 +42,7 @@ function App() {
           </>
         }/>
         <Route element={<PrivateRoute />}>
-          <Route path="/dashboard" element={<Dashboard isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout} deleteDeck={deleteDeck}/>}/>
+          <Route path="/dashboard" element={<Dashboard isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
           <Route path="/create-deck" element={<CreateDeck isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
           <Route path="/deckpage/:deckId" element={<DeckPage isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
           <Route path="/deckpage/:deckId/add" element={<DeckPage isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout}/>}/>
