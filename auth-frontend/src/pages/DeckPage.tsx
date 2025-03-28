@@ -8,6 +8,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import DeleteIcon from '@mui/icons-material/Delete';
 import Flashcard from '../components/Flashcard';
+import { Switch, FormControlLabel } from '@mui/material'
 
 interface Deck {
   _id: string;
@@ -35,6 +36,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const [flipped, setFlipped] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+  const [autoFill, setAutoFill] = useState<boolean>(false)
 
   const nav = useNavigate()
   const { deckId } = useParams<{ deckId: string }>()
@@ -188,6 +190,30 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
     }
   }
 
+  useEffect(() => {
+    if(!autoFill || cardName.trim().length === 0) return
+
+    const fetchDefinition = async () => {
+      try{
+        const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${cardName}`)
+        const data = await res.json()
+        
+        if(res.ok && data.length > 0){
+          const definition = data[0].meanings[0].definitions[0].definition
+          setFlashcardDescription(definition)
+        }
+        else{
+          setFlashcardDescription(flashcardDescription)
+        }
+      }
+      catch(error){
+        console.error(error)
+      }
+    }
+    const debounceTime = setTimeout(fetchDefinition, 400)
+    return () => clearTimeout(debounceTime)
+  }, [cardName])
+
   return (
     <div className='dashboard-container'>
       <Sidebar isOpen={isOpen} toggleSidebar={toggleSidebar} handleLogout={handleLogout} onDeckClick={handleSidebarClick} />
@@ -213,6 +239,10 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                   <span className='char-count'>{flashcardDescription.length}/200</span>
                 </div>
                 <button>Create Flashcard</button>
+                <FormControlLabel
+                  control={<Switch checked={autoFill} onChange={() => setAutoFill(!autoFill)} />}
+                  label="Auto-fill Definition"
+                />
               </form>
             </div>
           </>
@@ -227,7 +257,8 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                   question={flashcards[currentIndex].question} 
                   answer={flashcards[currentIndex].answer} 
                   ID={flashcards[currentIndex]._id}
-                  flipped={flipped} setFlipped={setFlipped} 
+                  flipped={flipped}
+                  setFlipped={setFlipped} 
                   onSave={(updatedQuestion, updatedAnswer) => 
                     updateFlashcard(flashcards[currentIndex]._id, updatedQuestion, updatedAnswer)}/>
               ) : (

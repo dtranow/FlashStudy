@@ -29,6 +29,13 @@ const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, 
     setEdit(!edit)
   }
 
+  const handleTransitionEnd = () => {
+    if(!edit){
+      setNewQuestion(question)
+      setNewAnswer(answer)
+    }
+  }
+
   useEffect(() => {
     setNewQuestion(question);
     setNewAnswer(answer);
@@ -37,7 +44,7 @@ const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, 
   return (
     <div className='flashcard-container'>
       <button className="edit-btn" onClick={handleSave}>{edit ? "Save" : "Edit"}</button>
-      <div className={`flashcard ${flipped? 'flipped' : ''}`} onClick={handleFlip}>
+      <div className={`flashcard ${flipped? 'flipped' : ''}`} onClick={handleFlip} onTransitionEnd={handleTransitionEnd}>
         <div className='flashcard-inner'>
           {edit ? (
             <>
@@ -53,7 +60,7 @@ const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, 
               <div className='flashcard-front'>
                 <p>{question}</p>
               </div>
-              <div className='flashcard-back'>
+              <div className='flashcard-back' onTimeUpdate={() => {300}}>
                 <p>{answer}</p>
               </div>
             </>
