@@ -27,17 +27,31 @@ Ensure you have the following installed:
 ```bash
 git clone https://github.com/your-username/FlashStudy.git
 cd FlashStudy
+```
 
-Install dependencies
+### Install dependencies
 Run the following command to install the required packages:
+```bash
 
 npm install
+```
+### Setup environment variables
+Create a .env file at the root of the project and add the following environment variables:
+```ini
+MONGO_URI=your-mongodb-uri
+JWT_SECRET=your-jwt-secret
+PORT=5000
+```
+Replace your-mongodb-uri with your actual MongoDB connection URI and your-jwt-secret with a secure secret for your JWT tokens.
 
-Run the app
+### Run the app
 To run both the client and server in development mode:
+1. In the backend directory, run:
+```bash
 
-In the backend directory, run:
 npm run dev
-
-In the frontend directory, run:
+```
+2. In the frontend directory, run:
+```bash
 npm start
+```
