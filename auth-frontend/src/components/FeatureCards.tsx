@@ -23,8 +23,8 @@ const FeatureCards: React.FC<props> = ({ title, description, onClick, className 
                 '&:hover': { transform: 'scale(1.06)', boxShadow: 8, backgroundColor: "#eeeeee" }
             }}>
             <CardContent>
-                <Typography variant='h5' fontWeight='bold' gutterBottom sx={{ wordWrap: "break-word" }}>{title} </Typography>
-                <Typography variant='body1' marginTop={2}>{description}</Typography>
+                <Typography variant='h4' fontWeight='bold' gutterBottom sx={{ wordWrap: "break-word" }}>{title} </Typography>
+                <Typography variant='h6' marginTop={2}>{description}</Typography>
             </CardContent>
         </Card>
     )

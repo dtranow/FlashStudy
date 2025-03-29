@@ -8,9 +8,10 @@ interface props {
   flipped: boolean;
   setFlipped: (flipped: boolean) => void
   onSave: (updatedQuestion: string, updatedAnswer: string) => void
+  hideAnswer: boolean;
 }
 
-const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, onSave}) => {
+const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, onSave, hideAnswer}) => {
   const [edit, setEdit] = useState<boolean>(false)
   const [newQuestion ,setNewQuestion] = useState<string>(question)
   const [newAnswer, setNewAnswer] = useState<string>(answer)
@@ -29,12 +30,6 @@ const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, 
     setEdit(!edit)
   }
 
-  const handleTransitionEnd = () => {
-    if(!edit){
-      setNewQuestion(question)
-      setNewAnswer(answer)
-    }
-  }
 
   useEffect(() => {
     setNewQuestion(question);
@@ -44,7 +39,7 @@ const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, 
   return (
     <div className='flashcard-container'>
       <button className="edit-btn" onClick={handleSave}>{edit ? "Save" : "Edit"}</button>
-      <div className={`flashcard ${flipped? 'flipped' : ''}`} onClick={handleFlip} onTransitionEnd={handleTransitionEnd}>
+      <div className={`flashcard ${flipped? 'flipped' : ''}`} onClick={handleFlip}>
         <div className='flashcard-inner'>
           {edit ? (
             <>
@@ -60,8 +55,8 @@ const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, 
               <div className='flashcard-front'>
                 <p>{question}</p>
               </div>
-              <div className='flashcard-back' onTimeUpdate={() => {300}}>
-                <p>{answer}</p>
+              <div className='flashcard-back' >
+                <p style={{ visibility: hideAnswer ? 'hidden' : 'visible'}}>{answer}</p>
               </div>
             </>
           )}

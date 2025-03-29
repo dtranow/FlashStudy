@@ -37,6 +37,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   const [flipped, setFlipped] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const [autoFill, setAutoFill] = useState<boolean>(false)
+  const [hideAnswer, setHideAnswer] = useState<boolean>(false)
 
   const nav = useNavigate()
   const { deckId } = useParams<{ deckId: string }>()
@@ -71,18 +72,6 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
     }
   }
 
-  useEffect(() => {
-    setMode('default')
-    fetchDeck()
-  }, [deckId])
-
-  useEffect(() => {
-    if (mode === 'study') {
-      fetchFlashcards()
-      setCurrentIndex(0)
-    }
-  }, [mode, deckId])
-
   const handleCardSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!cardName) return
@@ -113,15 +102,23 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
 
   const handlePrev = () => {
     if (currentIndex > 0) {
+      setHideAnswer(true)
       setCurrentIndex(currentIndex - 1)
       setFlipped(false)
+      setTimeout(() => {
+        setHideAnswer(false)
+      }, 400)
     }
   }
 
   const handleNext = () => {
     if (currentIndex < flashcards.length - 1) {
+      setHideAnswer(true)
       setCurrentIndex(currentIndex + 1)
       setFlipped(false)
+      setTimeout(() => {
+        setHideAnswer(false)
+      }, 400)
     }
   }
 
@@ -189,6 +186,18 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
       setMode('default')
     }
   }
+
+  useEffect(() => {
+    setMode('default')
+    fetchDeck()
+  }, [deckId])
+
+  useEffect(() => {
+    if (mode === 'study') {
+      fetchFlashcards()
+      setCurrentIndex(0)
+    }
+  }, [mode, deckId])
 
   useEffect(() => {
     if(!autoFill || cardName.trim().length === 0) return
@@ -260,7 +269,9 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                   flipped={flipped}
                   setFlipped={setFlipped} 
                   onSave={(updatedQuestion, updatedAnswer) => 
-                    updateFlashcard(flashcards[currentIndex]._id, updatedQuestion, updatedAnswer)}/>
+                    updateFlashcard(flashcards[currentIndex]._id, updatedQuestion, updatedAnswer)}
+                  hideAnswer={hideAnswer}
+                  />
               ) : (
                 <p>no flashcards available</p>
               )}
