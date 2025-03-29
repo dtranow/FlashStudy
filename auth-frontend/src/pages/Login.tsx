@@ -58,8 +58,8 @@ const Login: React.FC = () => {
       <div className='login-content'>
         <p>Logo</p>
         <h1>Welcome!</h1>
-        <h2>To FlashCardsMania</h2>
-        <p>description of website</p>
+        <h1>To FlashStudy</h1>
+        <p>Start learning today!</p>
       </div>
       <div className='login-box'>
         <h2>Sign In</h2>

@@ -19,6 +19,7 @@ interface Flashcard {
   question: string;
   answer: string;
   _id: string;
+  complete: boolean;
 }
 
 interface props {
@@ -187,6 +188,29 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
     }
   }
 
+  const handleComplete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    const flashcard = flashcards[currentIndex]
+    const isComplete = flashcard.complete
+    const flashcardId = flashcard._id
+    const jwt = localStorage.getItem('token')
+    try{
+      await axios.put(`http://localhost:5000/api/flashcards/${deckId}/${flashcardId}`, 
+        { complete: !isComplete, question: flashcard.question, answer: flashcard.answer },
+        { headers: { Authorization: `Bearer ${jwt}`}}
+      )
+      setFlashcards((prev) => prev.map(flashcard => flashcard._id === flashcardId ? 
+        {...flashcard, complete: !isComplete} : flashcard
+      ))
+    }
+    catch(error){
+      console.error(error)
+    }
+    // if(isComplete === false){
+    //   handleNext()
+    // }
+  }
+
   useEffect(() => {
     setMode('default')
     fetchDeck()
@@ -219,7 +243,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
         console.error(error)
       }
     }
-    const debounceTime = setTimeout(fetchDefinition, 400)
+    const debounceTime = setTimeout(fetchDefinition, 500)
     return () => clearTimeout(debounceTime)
   }, [cardName])
 
@@ -271,6 +295,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                   onSave={(updatedQuestion, updatedAnswer) => 
                     updateFlashcard(flashcards[currentIndex]._id, updatedQuestion, updatedAnswer)}
                   hideAnswer={hideAnswer}
+                  isComplete={flashcards[currentIndex].complete}
                   />
               ) : (
                 <p>no flashcards available</p>
@@ -291,6 +316,9 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
           <button className='back-btn' onClick={handleBack}>
             <ArrowBackIcon />
           </button>
+          {mode === 'study' && 
+            <button className='complete-btn' onClick={handleComplete}>Complete</button>
+          }
           <button className='del-btn'>
             <DeleteIcon onClick={handleDelete} />
           </button>

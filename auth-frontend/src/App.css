@@ -110,6 +110,49 @@
   background-color: rgb(48, 78, 117);
 }
 
+.title-bar {
+  --border-right: 6px;
+  --text-stroke-color: rgba(255, 255, 255, 0.6);
+  --animation-color: rgb(0, 123, 224);
+  --hover-border-color: black;
+  --fs-size: 1.7em;
+  position: relative;
+  display: inline-block;
+  font-size: var(--fs-size);
+  font-family: "Arial", sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--text-stroke-color);
+  transition: -webkit-text-stroke 0.5s ease-in-out, color 0.5s ease-in-out;
+}
+
+.hover-title {
+  position: absolute;
+  margin-left: -10px;
+  content: attr(data-text);
+  color: var(--animation-color);
+  width: 0%;
+  inset: 0;
+  border-right: var(--border-right) solid var(--animation-color);
+  overflow: hidden;
+  transition: width 0.5s ease-in-out;
+  -webkit-text-stroke: 1px var(--animation-color);
+}
+
+.title-bar:hover {
+  color: var(--animation-color);
+  -webkit-text-stroke: 1px var(--hover-border-color);
+  text-shadow: 0 0 8px rgba(0, 140, 255, 0.8), 
+               0 0 20px rgba(0, 140, 255, 0.6), 
+               0 0 30px rgba(0, 140, 255, 0.4);
+}
+
+.title-bar:hover .hover-title {
+  width: 105%;
+  filter: drop-shadow(0 0 15px var(--animation-color));
+}
+
 .content-section {
   margin-top: 160px;
   text-align: center;

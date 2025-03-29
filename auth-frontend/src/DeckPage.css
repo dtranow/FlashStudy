@@ -54,7 +54,7 @@
     position: absolute;
     top: 5px;
     left: 8px;
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: bold;
     color: #1863af;
   }
@@ -64,7 +64,7 @@
     position: absolute;
     top: 5px;
     left: 8px;
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: bold;
     color: #d32f2f;
   }
@@ -102,6 +102,14 @@
   .flashcard-nav button:hover {
     background-color: #145a9e;
     transform: scale(1.08);
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 2rem;
+    z-index: 1;
   }
 
   .deck-options {
@@ -146,9 +154,13 @@
     cursor: pointer;
     transition: transform background-color 0.2s;
   }
+
+  .complete-btn {
+    background-color: #007bff;
+  }
   
   
-  .back-btn:hover, .del-btn:hover {
+  .back-btn:hover, .del-btn:hover, .complete-btn:hover {
     background-color: #bbb;
     transform: scale(1.05);
   }

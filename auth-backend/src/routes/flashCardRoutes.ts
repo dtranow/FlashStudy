@@ -45,12 +45,24 @@ router.get('/:deckId', authMiddleWare, async (req: AuthRequest, res: Response) =
 
 router.put('/:deckId/:flashcardId', authMiddleWare, async (req: AuthRequest, res: Response) => {
     try{
-        const { flashcardId } = req.params
-        const {question, answer} = req.body
-        const updatedflashcard = await Flashcard.findByIdAndUpdate(flashcardId, 
-            { question, answer},
-            { new: true})
-        res.status(200).json(updatedflashcard)
+        const { deckId, flashcardId } = req.params
+        const {question, answer, complete} = req.body
+        const flashcard = await Flashcard.findById(flashcardId)
+        if(!flashcard){
+            res.status(404).json({ message: "flashcard not found"})
+            return
+        }
+        const wasCompleted = flashcard?.complete
+        flashcard.question = question;
+        flashcard.answer = answer;
+        flashcard.complete = complete;
+        await flashcard.save();
+
+        if(complete !== wasCompleted){
+            await Deck.findByIdAndUpdate(deckId, { $inc: {completeCount: complete ? 1 : -1 }})
+        }
+
+        res.status(200).json(flashcard)
     }
     catch(error){
         res.status(500).json({ message: "Failed to update flashcard"})
@@ -60,6 +72,12 @@ router.put('/:deckId/:flashcardId', authMiddleWare, async (req: AuthRequest, res
 router.delete('/:deckId/:flashcardId', authMiddleWare, async (req: AuthRequest, res: Response) => {
     try{
         const { deckId, flashcardId } = req.params
+        const flashcard = await Flashcard.findById(flashcardId)
+        const wasComplete = flashcard?.complete
+        if(wasComplete === true){
+            await Deck.findByIdAndUpdate(deckId, { $inc: {completeCount: -1}})
+        }
+
         await Flashcard.findByIdAndDelete(flashcardId)
 
         await Deck.findByIdAndUpdate(deckId, {

@@ -5,6 +5,19 @@ import mongoose from 'mongoose'
 import authRoutes from './routes/routes'
 import deckRoutes from './routes/deckRoutes'
 import cardRoutes from './routes/flashCardRoutes'
+import rateLimit from 'express-rate-limit'
+
+const authLimit = rateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 6,
+    message: "Too many login attempts try again later"
+})
+
+const generalLimit = rateLimit({
+    windowMs: 5 * 60 * 1000,
+    max: 100,
+    message: "Too many requests try again later"
+})
 
 const app = express();
 app.use(express.json());
@@ -14,9 +27,9 @@ app.use(cors({
     credentials: true,
     allowedHeaders: "Authorization, Content-Type"
 }))
-app.use('/api/auth', authRoutes)
-app.use('/api/decks', deckRoutes)
-app.use('/api/flashCards', cardRoutes)
+app.use('/api/auth', authLimit, authRoutes)
+app.use('/api/decks', generalLimit, deckRoutes)
+app.use('/api/flashCards', generalLimit, cardRoutes)
 
 dotenv.config()
 

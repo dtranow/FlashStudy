@@ -27,15 +27,14 @@ const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, onDeckC
     try {
       const res = await axios.get('http://localhost:5000/api/decks', {headers}
       )
-      console.log(res.data)
       if(Array.isArray(res.data)){
         const formatDecks = res.data.map(deck => {
           const numCards = deck.flashcards?.length || 0;
-          console.log(numCards)
+          const numCompleted = deck.completeCount
           return {
             _id: deck._id,
             name: deck.name,
-            progress: (2 / numCards) * 100 
+            progress: (numCompleted / numCards) * 100 
           }
         })
         setDecks(formatDecks)
@@ -69,7 +68,8 @@ const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, onDeckC
       <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
         <button className='close-btn' onClick={toggleSidebar}>{isOpen ? <VscArrowLeft/> : <VscArrowRight/>}</button>
         <div className='user-info'>
-          <h2>{name}</h2>
+          <h2>FlashStudy</h2>
+          <h3>Welcome, {name}</h3>
         </div>
         <nav className='flashcard-list'>
           <SidebarDeckList decks={decks || []} onDeckClick={onDeckClick ?? (() => {})}/>
