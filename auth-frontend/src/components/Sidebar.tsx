@@ -14,7 +14,7 @@ interface props {
 interface Deck {
   _id: string;
   name: string;
-  progress: number; //add completed cards later and then / by total cards in deck
+  progress: number;
 }
 
 const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, onDeckClick }) => {
@@ -34,7 +34,7 @@ const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, onDeckC
           return {
             _id: deck._id,
             name: deck.name,
-            progress: (numCompleted / numCards) * 100 
+            progress: numCards !== 0 ? (numCompleted / numCards) * 100 : 0
           }
         })
         setDecks(formatDecks)

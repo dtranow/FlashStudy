@@ -31,7 +31,7 @@ interface props {
 const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   const [deck, setDeck] = useState<Deck>({ _id: "", name: "" })
   const [flashcards, setFlashcards] = useState<Flashcard[]>([])
-  const [mode, setMode] = useState<'default' | 'add' | 'study'>('default')
+  const [mode, setMode] = useState<'default' | 'add' | 'study' | 'viewAll'>('default')
   const [cardName, setCardName] = useState<string>('')
   const [flashcardDescription, setFlashcardDescription] = useState<string>('')
   const [currentIndex, setCurrentIndex] = useState<number>(0)
@@ -123,15 +123,17 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
     }
   }
 
-  const handleDeleteFlashcard = async () => {
+  const handleDeleteFlashcard = async (flashcardId?: string) => {
     try {
       const jwt = localStorage.getItem('token')
-      const flashcardId = flashcards[currentIndex]._id
-      await axios.delete(`http://localhost:5000/api/flashcards/${deckId}/${flashcardId}`, {
+      const idToDelete = flashcards[currentIndex]._id || flashcardId
+      await axios.delete(`http://localhost:5000/api/flashcards/${deckId}/${idToDelete}`, {
         headers: { Authorization: `Bearer ${jwt}` }
       })
       setFlashcards(prev => prev.filter((_, index) => index !== currentIndex))
-      setCurrentIndex(prev => (prev > 0 ? prev - 1 : 0))
+      if(!flashcardId){
+        setCurrentIndex(prev => (prev > 0 ? prev - 1 : 0))
+      }
     }
     catch (error) {
       console.error("Failed to delete flashcard", error)
@@ -206,9 +208,6 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
     catch(error){
       console.error(error)
     }
-    // if(isComplete === false){
-    //   handleNext()
-    // }
   }
 
   useEffect(() => {
@@ -220,6 +219,9 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
     if (mode === 'study') {
       fetchFlashcards()
       setCurrentIndex(0)
+    }
+    else if (mode === 'viewAll'){
+      fetchFlashcards()
     }
   }, [mode, deckId])
 
@@ -257,6 +259,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
             <div className='deck-options'>
               <FeatureCards title="Add Flashcards" className='deckpage-cards' onClick={() => setMode('add')} />
               <FeatureCards title="Study Flashcards" className='deckpage-cards' onClick={() => setMode('study')} />
+              <FeatureCards title="View Deck" className='deckpage-cards' onClick={() => setMode('viewAll')}/>
             </div>
           </>
         )}
@@ -310,6 +313,33 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
               </button>
             </div>
             <div>{flashcards.length > 0 ? currentIndex + 1 : 0} / {flashcards.length}</div>
+          </>
+        )}
+        {mode === 'viewAll' && (
+          <>
+            <h2>All flashcards for {deck.name}</h2>
+            <div className='flashcard-table-container'>
+              <table className='flashcard-table'>
+                <thead>
+                  <tr>
+                    <th>Questions</th>
+                    <th>Answers</th>
+                    <th className='actions-header'></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {flashcards.map((flashcard) => (
+                    <tr key={flashcard._id} className='flashcard-row'>
+                      <td>{flashcard.question}</td>
+                      <td>{flashcard.answer}</td>
+                      <td className='actions-table'>
+                        <button className='table-delete-btn' onClick={() => handleDeleteFlashcard(flashcard._id)}>🗑️</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </>
         )}
         <div className='btn-container'>
