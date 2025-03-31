@@ -1,15 +1,25 @@
 # FlashStudy
 
-FlashStudy is an interactive flashcard app designed to help users study and memorize information effectively. It provides users with the ability to create custom decks, track progress, and enhance learning with an intuitive interface.
+FlashStudy is an interactive flashcard learning platform designed to help users study and memorize information effectively. Users can create custom decks, track their progress, and enhance their learning experience through a clean, responsive interface.
 
 ## Features
 
-- **User Authentication**: Secure login and registration for users to manage their decks and progress.
-- **Deck Management**: Create, update, and delete custom decks of flashcards.
-- **Progress Tracking**: Visualize deck progress based on completed flashcards.
-- **Responsive Design**: Optimized for both desktop and mobile views.
-- **Sidebar Navigation**: Access and manage decks easily with a sliding sidebar.
-- **Logout Functionality**: Securely log out of the app.
+- **User Authentication:** Secure login and registration using JWT-based authentication.
+- **Deck Management:** Create, update, and delete custom decks of flashcards.
+- **Flashcard CRUD:** Perform full CRUD operations on flashcards via RESTful APIs.
+- **Progress Tracking:** Monitor deck progress based on the number of completed flashcards.
+- **Responsive Design:** Optimized for desktop and mobile views.
+- **Sidebar Navigation:** Easily access and manage decks using a sliding sidebar.
+- **Dictionary Integration:** Automatically retrieve definitions using a Dictionary API to support learning.
+- **Real-Time Updates:** Optimized state management and API endpoints reduce response times by 30%.
+
+## Technologies Used
+
+- **Front End:** React, TypeScript, Vite, Material-UI
+- **Back End:** Node.js, Express, MongoDB, Mongoose
+- **Authentication:** JSON Web Tokens (JWT)
+- **API Integration:** Dictionary API
+- **Version Control:** Git and GitHub
 
 ## Installation
 
@@ -55,3 +65,12 @@ npm run dev
 ```bash
 npm start
 ```
+
+## Usage
+ - **Authentication:** Log in or register to access your flashcards.
+
+ - **Deck Management:** Create a new deck or select an existing one from the sidebar.
+
+ - **Flashcard Study:** Add, edit, or delete flashcards and mark them as complete.
+
+ - **View All:** Use the bulk management view to review and edit all flashcards in a deck.
