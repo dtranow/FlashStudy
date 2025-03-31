@@ -25,7 +25,7 @@ Ensure you have the following installed:
 ### Clone the repository
 
 ```bash
-git clone https://github.com/your-username/FlashStudy.git
+git clone https://github.com/dtranow/FlashStudy.git
 cd FlashStudy
 ```
 
