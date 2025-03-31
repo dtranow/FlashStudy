@@ -39,6 +39,7 @@
     height: 100%;
     backface-visibility: hidden;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     font-size: 1.5rem;
@@ -47,6 +48,9 @@
     border-radius: 8px;
     padding: 10px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    overflow-wrap: break-word;
+    white-space: normal;
+    word-break: break-word;
   }
 
   .flashcard-front::after {
@@ -159,6 +163,10 @@
     background-color: #007bff;
   }
   
+  .create-flashcard-btn{
+    background-color: #007bff;
+    margin-right: 25px;
+  }
   
   .back-btn:hover, .del-btn:hover, .complete-btn:hover {
     background-color: #bbb;
@@ -202,33 +210,93 @@
     padding: 8px;
     border: 1px solid #ddd;
     text-align: left;
+    border-radius: 6px;
   }
 
-  .flashcard-row {
-    position: relative;
+  .flashcard-table td {
+    max-width: 300px;
+    overflow-wrap: break-word;
+  }
+
+  .flashcard-table th {
+    text-align: center;
+  }
+
+  .flashcard-row:hover {
+    transition: background-color 0.3s ease;
+  }
+
+  .flashcard-row:hover td {
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px solid #ddd;
   }
   
   .flashcard-row .actions-table {
     opacity: 0;
     transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
   }
   
   .flashcard-row:hover .actions-table {
+    background-color: transparent;
     opacity: 1;
   }
   
-  .table-delete-btn {
+  .table-delete-btn, .table-edit-btn {
+    display: inline-block;
     background: none;
     border: none;
     cursor: pointer;
     font-size: 1.2em;
+    transition: transform 0.3s ease;
   }
+
+  .table-delete-btn:focus, .table-edit-btn:focus {
+    outline: none;
+  }
+
+  .table-save-btn {
+    background-color: #8ec3fc;
+    transition: transform 0.3s ease;
+  }
+
+  .table-save-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .table-delete-btn:hover, .table-edit-btn:hover {
+    transform: scale(1.24);
+  }
+
   .actions-header {
-    width: 40px;
     border: none;
     padding: 0;
   }
   
+.flashcard-table input,
+.flashcard-table textarea {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  background-color: #f9f9f9;
+  transition: border 0.3s ease;
+}
+
+.flashcard-table input:focus,
+.flashcard-table textarea:focus {
+  border-color: #1b2735;
+  outline: none;
+}
+
+  .flashcard-table textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
   @media (max-width: 500px) {
     .deck-options {
       flex-direction: column;

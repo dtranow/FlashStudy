@@ -44,6 +44,8 @@
     text-align: center;
     margin-top: 65px;
     margin-bottom: 40px;
+    max-width: 100%;
+    overflow-wrap: break-word;
 }
 
 .flashcard-list {

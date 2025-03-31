@@ -153,6 +153,10 @@
   filter: drop-shadow(0 0 15px var(--animation-color));
 }
 
+.nav-bar a:hover {
+  color: #006adba6;
+}
+
 .content-section {
   margin-top: 160px;
   text-align: center;

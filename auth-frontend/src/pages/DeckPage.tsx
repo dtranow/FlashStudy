@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Sidebar from '../components/Sidebar'
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios'
@@ -39,9 +39,12 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   const [loading, setLoading] = useState<boolean>(false)
   const [autoFill, setAutoFill] = useState<boolean>(false)
   const [hideAnswer, setHideAnswer] = useState<boolean>(false)
+  const [editingFlashcardId, setEditingFlashcardId] = useState<string | null>(null)
 
   const nav = useNavigate()
   const { deckId } = useParams<{ deckId: string }>()
+
+  const cardNameInputRef = useRef<HTMLInputElement>(null)
 
   const fetchDeck = async () => {
     try {
@@ -123,23 +126,6 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
     }
   }
 
-  const handleDeleteFlashcard = async (flashcardId?: string) => {
-    try {
-      const jwt = localStorage.getItem('token')
-      const idToDelete = flashcards[currentIndex]._id || flashcardId
-      await axios.delete(`http://localhost:5000/api/flashcards/${deckId}/${idToDelete}`, {
-        headers: { Authorization: `Bearer ${jwt}` }
-      })
-      setFlashcards(prev => prev.filter((_, index) => index !== currentIndex))
-      if(!flashcardId){
-        setCurrentIndex(prev => (prev > 0 ? prev - 1 : 0))
-      }
-    }
-    catch (error) {
-      console.error("Failed to delete flashcard", error)
-    }
-  }
-
   const handleDeleteDeck = async () => {
     try {
       const jwt = localStorage.getItem('token')
@@ -160,14 +146,31 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
         { question: updatedQuestion, answer: updatedAnswer },
         { headers: { Authorization: `Bearer ${jwt}` } }
       )
-        setFlashcards(prev => prev.map(flashcard => flashcard._id === flashcardId ?
-          { ...flashcard, question: updatedQuestion, answer: updatedAnswer } : flashcard
-        ))
-        fetchFlashcards()
+      setFlashcards(prev => prev.map(flashcard => flashcard._id === flashcardId ?
+        { ...flashcard, question: updatedQuestion, answer: updatedAnswer } : flashcard
+      ))
+      fetchFlashcards()
 
     }
     catch (error) {
       console.error("error updating flashcard", error)
+    }
+  }
+
+  const handleDeleteFlashcard = async (flashcardId?: string) => {
+    try {
+      const jwt = localStorage.getItem('token')
+      const idToDelete = flashcardId ? flashcardId : flashcards[currentIndex]._id
+      setFlashcards(prev => prev.filter((flashcard) => flashcard._id !== idToDelete))
+      if (!flashcardId) {
+        setCurrentIndex(prev => (prev > 0 ? prev - 1 : 0))
+      }
+      await axios.delete(`http://localhost:5000/api/flashcards/${deckId}/${idToDelete}`, {
+        headers: { Authorization: `Bearer ${jwt}` }
+      })
+    }
+    catch (error) {
+      console.error("Failed to delete flashcard", error)
     }
   }
 
@@ -196,16 +199,16 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
     const isComplete = flashcard.complete
     const flashcardId = flashcard._id
     const jwt = localStorage.getItem('token')
-    try{
-      await axios.put(`http://localhost:5000/api/flashcards/${deckId}/${flashcardId}`, 
+    try {
+      await axios.put(`http://localhost:5000/api/flashcards/${deckId}/${flashcardId}`,
         { complete: !isComplete, question: flashcard.question, answer: flashcard.answer },
-        { headers: { Authorization: `Bearer ${jwt}`}}
+        { headers: { Authorization: `Bearer ${jwt}` } }
       )
-      setFlashcards((prev) => prev.map(flashcard => flashcard._id === flashcardId ? 
-        {...flashcard, complete: !isComplete} : flashcard
+      setFlashcards((prev) => prev.map(flashcard => flashcard._id === flashcardId ?
+        { ...flashcard, complete: !isComplete } : flashcard
       ))
     }
-    catch(error){
+    catch (error) {
       console.error(error)
     }
   }
@@ -220,32 +223,35 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
       fetchFlashcards()
       setCurrentIndex(0)
     }
-    else if (mode === 'viewAll'){
+    else if (mode === 'viewAll') {
       fetchFlashcards()
+    }
+    else if(mode === 'add'){
+      cardNameInputRef.current?.focus()
     }
   }, [mode, deckId])
 
   useEffect(() => {
-    if(!autoFill || cardName.trim().length === 0) return
+    if (!autoFill || cardName.trim().length === 0) return
 
     const fetchDefinition = async () => {
-      try{
+      try {
         const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${cardName}`)
         const data = await res.json()
-        
-        if(res.ok && data.length > 0){
+
+        if (res.ok && data.length > 0) {
           const definition = data[0].meanings[0].definitions[0].definition
           setFlashcardDescription(definition)
         }
-        else{
+        else {
           setFlashcardDescription(flashcardDescription)
         }
       }
-      catch(error){
+      catch (error) {
         console.error(error)
       }
     }
-    const debounceTime = setTimeout(fetchDefinition, 500)
+    const debounceTime = setTimeout(fetchDefinition, 400)
     return () => clearTimeout(debounceTime)
   }, [cardName])
 
@@ -259,7 +265,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
             <div className='deck-options'>
               <FeatureCards title="Add Flashcards" className='deckpage-cards' onClick={() => setMode('add')} />
               <FeatureCards title="Study Flashcards" className='deckpage-cards' onClick={() => setMode('study')} />
-              <FeatureCards title="View Deck" className='deckpage-cards' onClick={() => setMode('viewAll')}/>
+              <FeatureCards title="View Deck" className='deckpage-cards' onClick={() => setMode('viewAll')} />
             </div>
           </>
         )}
@@ -268,13 +274,13 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
             <div>
               <form className='flashcard-form' onSubmit={handleCardSubmit}>
                 <p>{deck.name}</p>
-                <input className="deck-input" type="text" placeholder='Enter Card Title' maxLength={50} value={cardName} onChange={(e) => setCardName(e.target.value)} />
+                <input className="deck-input" ref={cardNameInputRef} type="text" placeholder='Enter Card Title' maxLength={75} value={cardName} onChange={(e) => setCardName(e.target.value)} />
                 <p>Description</p>
                 <div className='input-wrapper'>
                   <textarea className='deck-description' value={flashcardDescription} maxLength={200} onChange={(e) => setFlashcardDescription(e.target.value)} />
                   <span className='char-count'>{flashcardDescription.length}/200</span>
                 </div>
-                <button>Create Flashcard</button>
+                <button className='create-flashcard-btn'>Create Flashcard</button>
                 <FormControlLabel
                   control={<Switch checked={autoFill} onChange={() => setAutoFill(!autoFill)} />}
                   label="Auto-fill Definition"
@@ -289,17 +295,17 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
               {loading ? (
                 <p>Loading flashcards...</p>
               ) : flashcards.length > 0 ? (
-                <Flashcard 
-                  question={flashcards[currentIndex].question} 
-                  answer={flashcards[currentIndex].answer} 
+                <Flashcard
+                  question={flashcards[currentIndex].question}
+                  answer={flashcards[currentIndex].answer}
                   ID={flashcards[currentIndex]._id}
                   flipped={flipped}
-                  setFlipped={setFlipped} 
-                  onSave={(updatedQuestion, updatedAnswer) => 
+                  setFlipped={setFlipped}
+                  onSave={(updatedQuestion, updatedAnswer) =>
                     updateFlashcard(flashcards[currentIndex]._id, updatedQuestion, updatedAnswer)}
                   hideAnswer={hideAnswer}
                   isComplete={flashcards[currentIndex].complete}
-                  />
+                />
               ) : (
                 <p>no flashcards available</p>
               )}
@@ -330,9 +336,51 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                 <tbody>
                   {flashcards.map((flashcard) => (
                     <tr key={flashcard._id} className='flashcard-row'>
-                      <td>{flashcard.question}</td>
-                      <td>{flashcard.answer}</td>
+                      <td>
+                        {editingFlashcardId === flashcard._id ? (
+                          <input 
+                            type="text"
+                            maxLength={75}
+                            defaultValue={flashcard.question}
+                            onChange={(e) =>
+                              setFlashcards((prev) => prev.map((fc) =>
+                                fc._id === flashcard._id ? { ...fc, question: e.target.value } : fc
+                              ))
+                            }
+                          />
+                        ) : (
+                          flashcard.question
+                        )
+                        }
+                      </td>
+                      <td>
+                        {editingFlashcardId === flashcard._id ? (
+                          <textarea
+                            maxLength={200}
+                            defaultValue={flashcard.answer}
+                            onChange={(e) =>
+                              setFlashcards((prev) => prev.map((fc) =>
+                                fc._id === flashcard._id ? { ...fc, answer: e.target.value } : fc
+                              ))
+                            }
+                          />
+                        ) : (
+                          flashcard.answer
+                        )
+                        }
+                      </td>
                       <td className='actions-table'>
+                        {editingFlashcardId === flashcard._id ? (
+                          <button
+                            className='table-save-btn'
+                            onClick={() => {
+                              updateFlashcard(flashcard._id, flashcard.question, flashcard.answer)
+                              setEditingFlashcardId(null)
+                            }}
+                          >Save</button>
+                        ) : (
+                          <button className="table-edit-btn" onClick={() => setEditingFlashcardId(flashcard._id)}>✏️</button>
+                        )}
                         <button className='table-delete-btn' onClick={() => handleDeleteFlashcard(flashcard._id)}>🗑️</button>
                       </td>
                     </tr>
@@ -346,12 +394,14 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
           <button className='back-btn' onClick={handleBack}>
             <ArrowBackIcon />
           </button>
-          {mode === 'study' && 
+          {mode === 'study' &&
             <button className='complete-btn' onClick={handleComplete}>Complete</button>
           }
-          <button className='del-btn'>
-            <DeleteIcon onClick={handleDelete} />
-          </button>
+          {mode !== 'add' && mode !== 'viewAll' && 
+            <button className='del-btn'>
+              <DeleteIcon onClick={handleDelete} />
+            </button>
+          }
         </div>
       </div>
     </div>
