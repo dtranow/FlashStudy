@@ -240,7 +240,10 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
         const data = await res.json()
 
         if (res.ok && data.length > 0) {
-          const definition = data[0].meanings[0].definitions[0].definition
+          let definition = data[0].meanings[0].definitions[0].definition
+          if(definition.length > 300){
+            definition = definition.substring(0, 300)
+          }
           setFlashcardDescription(definition)
         }
         else {
@@ -277,8 +280,8 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                 <input className="deck-input" ref={cardNameInputRef} type="text" placeholder='Enter Card Title' maxLength={75} value={cardName} onChange={(e) => setCardName(e.target.value)} />
                 <p>Description</p>
                 <div className='input-wrapper'>
-                  <textarea className='deck-description' value={flashcardDescription} maxLength={200} onChange={(e) => setFlashcardDescription(e.target.value)} />
-                  <span className='char-count'>{flashcardDescription.length}/200</span>
+                  <textarea className='deck-description' value={flashcardDescription} maxLength={300} onChange={(e) => setFlashcardDescription(e.target.value)} />
+                  <span className='char-count'>{flashcardDescription.length}/300</span>
                 </div>
                 <button className='create-flashcard-btn'>Create Flashcard</button>
                 <FormControlLabel
@@ -356,7 +359,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                       <td>
                         {editingFlashcardId === flashcard._id ? (
                           <textarea
-                            maxLength={200}
+                            maxLength={300}
                             defaultValue={flashcard.answer}
                             onChange={(e) =>
                               setFlashcards((prev) => prev.map((fc) =>
