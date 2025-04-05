@@ -9,6 +9,9 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import DeleteIcon from '@mui/icons-material/Delete';
 import Flashcard from '../components/Flashcard';
 import { Switch, FormControlLabel } from '@mui/material'
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
 
 interface Deck {
   _id: string;
@@ -266,9 +269,9 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
           <>
             <h2>Add cards to {deck.name} or start studying!</h2>
             <div className='deck-options'>
-              <FeatureCards title="Add Flashcards" className='deckpage-cards' onClick={() => setMode('add')} />
-              <FeatureCards title="Study Flashcards" className='deckpage-cards' onClick={() => setMode('study')} />
-              <FeatureCards title="View Deck" className='deckpage-cards' onClick={() => setMode('viewAll')} />
+              <FeatureCards title="Add Flashcards" icon={<NoteAddIcon />} className='deckpage-cards' onClick={() => setMode('add')} />
+              <FeatureCards title="Study Flashcards" icon={<MenuBookIcon />} className='deckpage-cards' onClick={() => setMode('study')} />
+              <FeatureCards title="View Deck" icon={<ViewModuleIcon />} className='deckpage-cards' onClick={() => setMode('viewAll')} />
             </div>
           </>
         )}

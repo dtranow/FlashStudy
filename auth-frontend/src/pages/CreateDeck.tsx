@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import '../Dashboard.css'
 import { useNavigate } from 'react-router-dom'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 
 interface props {
   isOpen: boolean;
@@ -16,6 +18,10 @@ const CreateDeck: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) =>
   const nav = useNavigate()
 
   const handleHome = () => {
+    nav('/dashboard')
+  }
+
+  const handleBack = async () => {
     nav('/dashboard')
   }
 
@@ -57,6 +63,9 @@ const CreateDeck: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) =>
           </div>
           <button className='create-deck-btn'>Create</button>
         </form>
+        <button className='back-btn' onClick={handleBack}>
+          <ArrowBackIcon />
+        </button>
       </div>
     </div>
   )

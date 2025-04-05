@@ -1,13 +1,15 @@
 import React from 'react'
 import { Card, CardContent, Typography } from '@mui/material'
+
 interface props {
     title: string;
     description?: string;
     onClick?: () => void;
     className?: string;
+    icon?: React.ReactNode;
 }
 
-const FeatureCards: React.FC<props> = ({ title, description, onClick, className }) => {
+const FeatureCards: React.FC<props> = ({ title, description, onClick, className, icon }) => {
     return (
         <Card
             className={`feature-card ${className || ''}`}
@@ -25,6 +27,7 @@ const FeatureCards: React.FC<props> = ({ title, description, onClick, className 
             <CardContent>
                 <Typography variant='h4' fontWeight='bold' gutterBottom sx={{ wordWrap: "break-word" }}>{title} </Typography>
                 <Typography variant='h6' marginTop={2}>{description}</Typography>
+                {icon && <div className='feature-card-icon'>{icon}</div>}
             </CardContent>
         </Card>
     )
