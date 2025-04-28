@@ -10,9 +10,10 @@ interface props {
   onSave: (updatedQuestion: string, updatedAnswer: string) => void
   hideAnswer: boolean;
   isComplete: boolean;
+  imageUrl?: string;
 }
 
-const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, onSave, hideAnswer, isComplete}) => {
+const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, onSave, hideAnswer, isComplete, imageUrl}) => {
   const [edit, setEdit] = useState<boolean>(false)
   const [newQuestion ,setNewQuestion] = useState<string>(question)
   const [newAnswer, setNewAnswer] = useState<string>(answer)
@@ -59,8 +60,9 @@ const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, 
                 <p>{question}</p>
                 {isComplete && <span className='checkmark'>✔️</span>}
               </div>
-              <div className='flashcard-back' >
+              <div className='flashcard-back'>
                 <p style={{ visibility: hideAnswer ? 'hidden' : 'visible'}}>{answer}</p>
+                <img src={imageUrl} alt={'flashcard-image'} style={{ visibility: hideAnswer ? 'hidden' : 'visible', maxWidth: '100%'}}/>
                 {isComplete && <span className='checkmark'>✔️</span>}
               </div>
             </>

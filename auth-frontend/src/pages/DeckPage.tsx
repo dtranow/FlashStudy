@@ -23,6 +23,7 @@ interface Flashcard {
   answer: string;
   _id: string;
   complete: boolean;
+  imageUrl?: string;
 }
 
 interface props {
@@ -43,6 +44,8 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   const [autoFill, setAutoFill] = useState<boolean>(false)
   const [hideAnswer, setHideAnswer] = useState<boolean>(false)
   const [editingFlashcardId, setEditingFlashcardId] = useState<string | null>(null)
+  const [imageKey, setImageKey] = useState<string>('')
+  const [preview, setPreview] = useState<string>('')
 
   const nav = useNavigate()
   const { deckId } = useParams<{ deckId: string }>()
@@ -69,6 +72,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
       const res = await axios.get(`http://localhost:5000/api/decks/${deckId}`, {
         headers: { Authorization: `Bearer ${jwt}` }
       })
+      console.log(res.data.flashcards)
       setFlashcards(res.data.flashcards)
     }
     catch (error) {
@@ -91,11 +95,13 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
         "Authorization": `Bearer ${jwt}`,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ question: cardName, answer: flashcardDescription })
+      body: JSON.stringify({ question: cardName, answer: flashcardDescription, image: imageKey })
     })
     if (res.ok) {
       setCardName('')
       setFlashcardDescription('')
+      setImageKey('')
+      setPreview('')
     }
     else {
       console.error("Failed to create flashcard")
@@ -216,6 +222,44 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
     }
   }
 
+  const handleFileSelect = async (file?: File) => {
+    if(!file) return
+    const maxsize = 2*1024*1024
+    if(file.size > maxsize){
+      alert('file cant be over 2mb')
+      return
+    }
+    const localUrl = URL.createObjectURL(file)
+    setPreview(localUrl)
+    const form = new FormData()
+    form.append('image', file)
+    const { data } = await axios.post('http://localhost:5000/api/upload/', form, {
+      headers: { 'Content-Type': 'multipart/form-data'}
+      })
+    setImageKey(data.Key)
+  }
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    if(e.dataTransfer.files.length !== 1){
+      alert('Only 1 file')
+      return
+    }
+    const file = e.dataTransfer.files[0]
+    const accepted = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg']
+    if(!accepted.includes(file.type)){
+      alert('Only image files')
+      return
+    }
+    const maxSize = 2*1024*1024
+    if(file.size > maxSize){
+      alert('file size must be under 2mb')
+      return
+    }
+    handleFileSelect(e.dataTransfer.files[0])
+    e.dataTransfer.clearData()
+  }
+
   useEffect(() => {
     setMode('default')
     fetchDeck()
@@ -225,6 +269,9 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
     if (mode === 'study') {
       fetchFlashcards()
       setCurrentIndex(0)
+
+      const id = setInterval(fetchFlashcards, 300_000)
+      return () => clearInterval(id)
     }
     else if (mode === 'viewAll') {
       fetchFlashcards()
@@ -286,6 +333,19 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                   <textarea className='deck-description' value={flashcardDescription} maxLength={300} onChange={(e) => setFlashcardDescription(e.target.value)} />
                   <span className='char-count'>{flashcardDescription.length}/300</span>
                 </div>
+                <div className='image-upload-div' onDragOver={e => e.preventDefault()} onDrop={handleDrop}
+                  style={{
+                    border: '2px dashed #ccc',
+                    padding: '1rem',
+                    textAlign: 'center',
+                  }}
+                  >
+                  {preview ?
+                    <img src={preview} alt="preview" style={{ maxWidth: '100%'}}/> :
+                    <p>Drag and drop an image or click to select file</p>
+                }
+                  <input type='file' accept='image/jpeg, image/png, image/webp' onChange={e => {handleFileSelect(e.target.files?.[0])}}/>
+                </div>
                 <button className='create-flashcard-btn'>Create Flashcard</button>
                 <FormControlLabel
                   control={<Switch checked={autoFill} onChange={() => setAutoFill(!autoFill)} />}
@@ -311,6 +371,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                     updateFlashcard(flashcards[currentIndex]._id, updatedQuestion, updatedAnswer)}
                   hideAnswer={hideAnswer}
                   isComplete={flashcards[currentIndex].complete}
+                  imageUrl={flashcards[currentIndex].imageUrl}
                 />
               ) : (
                 <p>no flashcards available</p>
@@ -374,6 +435,9 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                           flashcard.answer
                         )
                         }
+                      </td>
+                      <td>
+                        <img src={flashcard.imageUrl}/>
                       </td>
                       <td className='actions-table'>
                         {editingFlashcardId === flashcard._id ? (

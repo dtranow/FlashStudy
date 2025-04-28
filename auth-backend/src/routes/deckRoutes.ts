@@ -2,6 +2,9 @@ import express, { Response } from "express"
 import authMiddleware, { AuthRequest } from '../middleware'
 import Deck from "../models/deckModel"
 import Flashcard from "../models/flashcardModel"
+import { GetObjectCommand } from "@aws-sdk/client-s3"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+import { s3 } from '../server' 
 
 const router = express.Router()
 
@@ -46,7 +49,7 @@ router.get('/', authMiddleware, async (req: AuthRequest, res: Response) => {
 router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
     const { id } = req.params
     try {
-        const deck = await Deck.findOne({ _id: id, user: req.user.userID }).populate('flashcards')
+        const deck = await Deck.findOne({ _id: id, user: req.user.userID }).populate('flashcards').lean()
         if(!deck){
             res.status(404).json({ message: "Deck not found" })
             return
@@ -55,6 +58,19 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
             res.status(403).json({ message: "Unauthorized access to this deck"})
             return
         }
+        console.log('pre presign', deck.flashcards)
+        deck.flashcards = await Promise.all(
+            deck.flashcards.map(async (card: any) => {
+                if(!card.image) return card
+                const command = new GetObjectCommand({
+                    Bucket: 'flashstudy-images',
+                    Key: card.image
+                })
+                const signedUrl = await getSignedUrl(s3, command, { expiresIn: 300})
+                return {...card, imageUrl: signedUrl}
+            })
+        )
+        console.log('post presign', deck.flashcards)
         res.json(deck)
     }
     catch(error) {
