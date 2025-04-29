@@ -16,13 +16,17 @@ async function cleanupOrphans() {
         return
     }
 
+    let totalDeleted = 0
+
     for(let i = 0; i < orphanKeys.length; i += 1000){
-        let junk = orphanKeys.slice(i,i+1000).map(Key => ({ Key }))
+        let orphan = orphanKeys.slice(i,i+1000).map(Key => ({ Key }))
         await s3.send(new DeleteObjectsCommand({
             Bucket: 'flashstudy-images',
-            Delete: {Objects: junk}
+            Delete: {Objects: orphan}
         }))
+        totalDeleted += orphan.length
     }
+    console.log(`Cleanup complete total deleted: ${totalDeleted} image(s).`)
 }
 
 cleanupOrphans()

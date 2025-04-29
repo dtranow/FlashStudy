@@ -46,6 +46,8 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   const [editingFlashcardId, setEditingFlashcardId] = useState<string | null>(null)
   const [imageKey, setImageKey] = useState<string>('')
   const [preview, setPreview] = useState<string>('')
+  const [showImage, setShowImage] = useState<boolean>(false)
+  const [showImageUrl, setShowImageUrl] = useState<string | null>(null)
 
   const nav = useNavigate()
   const { deckId } = useParams<{ deckId: string }>()
@@ -390,7 +392,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
         )}
         {mode === 'viewAll' && (
           <>
-            <h2>All flashcards for {deck.name}</h2>
+            <h2>Flashcards for {deck.name}</h2>
             <div className='flashcard-table-container'>
               <table className='flashcard-table'>
                 <thead>
@@ -437,7 +439,14 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                         }
                       </td>
                       <td>
-                        <img src={flashcard.imageUrl}/>
+                        <img 
+                          src={flashcard.imageUrl}
+                          style={{ maxWidth: '400px', maxHeight: '400px', objectFit: 'cover' }}
+                          onClick={() => {
+                            setShowImage(true)
+                            setShowImageUrl(flashcard.imageUrl ?? null)
+                          }}
+                        />
                       </td>
                       <td className='actions-table'>
                         {editingFlashcardId === flashcard._id ? (
@@ -474,6 +483,14 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
           }
         </div>
       </div>
+      {showImage && (
+        <div className="image-modal-overlay" onClick={() => setShowImage(false)}>
+          <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-modal-btn" onClick={() => setShowImage(false)}>✖</button>
+            <img src={showImageUrl ?? undefined} alt="fullsize-image" />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

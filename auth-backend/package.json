@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "dev": "ts-node src/server.ts",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "cleanup" : "ts-node src/scripts/cleanupOrphans.ts"
   },
   "keywords": [],
   "author": "",

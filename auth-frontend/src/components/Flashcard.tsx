@@ -62,7 +62,7 @@ const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, 
               </div>
               <div className='flashcard-back'>
                 <p style={{ visibility: hideAnswer ? 'hidden' : 'visible'}}>{answer}</p>
-                <img src={imageUrl} alt={'flashcard-image'} style={{ visibility: hideAnswer ? 'hidden' : 'visible', maxWidth: '100%'}}/>
+                <img src={imageUrl} alt={'flashcard-image'} style={{ visibility: hideAnswer ? 'hidden' : 'visible', maxWidth: '80%', maxHeight: '80%', objectFit: 'cover'}}/>
                 {isComplete && <span className='checkmark'>✔️</span>}
               </div>
             </>

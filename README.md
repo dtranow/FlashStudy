@@ -7,6 +7,7 @@ FlashStudy is an interactive flashcard learning platform designed to help users 
 - **User Authentication:** Secure login and registration using JWT-based authentication.
 - **Deck Management:** Create, update, and delete custom decks of flashcards.
 - **Flashcard CRUD:** Perform full CRUD operations on flashcards via RESTful APIs.
+- **Image Uploads:** Upload and manage images for flashcard descriptions, stored securely in AWS S3.
 - **Progress Tracking:** Monitor deck progress based on the number of completed flashcards.
 - **Responsive Design:** Optimized for desktop and mobile views.
 - **Sidebar Navigation:** Easily access and manage decks using a sliding sidebar.
@@ -18,6 +19,7 @@ FlashStudy is an interactive flashcard learning platform designed to help users 
 - **Front End:** React, TypeScript, Vite, Material-UI
 - **Back End:** Node.js, Express, MongoDB, Mongoose
 - **Authentication:** JSON Web Tokens (JWT)
+- **Storage:** AWS S3 (for flashcard image uploads)
 - **API Integration:** Dictionary API
 - **Version Control:** Git and GitHub
 
@@ -31,6 +33,7 @@ Ensure you have the following installed:
 - Node.js (v14 or above)
 - npm or yarn
 - MongoDB (or an active MongoDB cloud database)
+- AWS account (for S3 setup)
 
 ### Clone the repository
 
@@ -51,6 +54,10 @@ Create a .env file at the root of the project and add the following environment 
 MONGO_URI=your-mongodb-uri
 JWT_SECRET=your-jwt-secret
 PORT=5000
+AWS_ACCESS_KEY_ID=your-aws-access-key-id
+AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
+AWS_REGION=your-aws-region
+S3_BUCKET_NAME=your-s3-bucket-name
 ```
 Replace your-mongodb-uri with your actual MongoDB connection URI and your-jwt-secret with a secure secret for your JWT tokens.
 
@@ -72,5 +79,7 @@ npm start
  - **Deck Management:** Create a new deck or select an existing one from the sidebar.
 
  - **Flashcard Study:** Add, edit, or delete flashcards and mark them as complete.
+
+ - **Image Uploads:** Attach an image to any flashcard description. Images are instantly uploaded to AWS S3 and displayed within the flashcard.
 
  - **View All:** Use the bulk management view to review and edit all flashcards in a deck.

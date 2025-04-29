@@ -17,8 +17,8 @@
 }
 
 .flashcard {
-  width: 400px;
-  height: 300px;
+  width: 550px;
+  height: 350px;
   perspective: 1000px;
   cursor: pointer;
   position: relative;
@@ -214,7 +214,7 @@
   }
 
   .flashcard-table td {
-    max-width: 300px;
+    max-width: 500px;
     overflow-wrap: break-word;
   }
 
@@ -294,7 +294,51 @@
 
   .flashcard-table textarea {
     min-height: 100px;
+    max-width: 100px;
     resize: vertical;
+  }
+
+  .image-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.527);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+  }
+  
+  .image-modal-content {
+    position: relative;
+    background: rgb(214, 214, 214);
+    padding: 22px;
+    border-radius: 10px;
+    max-width: 92%;
+    max-height: 92%;
+    overflow: auto;
+  }
+  
+  .image-modal-content img {
+    width: 100%;
+    height: auto;
+    max-height: 80vh;
+    object-fit: contain;
+  }
+  
+  .close-modal-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .close-modal-btn:focus {
+    outline: none;
   }
 
   @media (max-width: 500px) {
