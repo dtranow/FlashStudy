@@ -63,7 +63,7 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
             deck.flashcards.map(async (card: any) => {
                 if(!card.image) return card
                 const command = new GetObjectCommand({
-                    Bucket: 'flashstudy-images',
+                    Bucket: process.env.S3_BUCKET_NAME,
                     Key: card.image
                 })
                 const signedUrl = await getSignedUrl(s3, command, { expiresIn: 300})

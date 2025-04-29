@@ -35,35 +35,6 @@ router.post('/:deckId', authMiddleWare, async (req: AuthRequest, res: Response) 
     }
 })
 
-router.get('/:deckId', authMiddleWare, async (req: AuthRequest, res: Response) => {
-    // try{
-    //     const deckId = req.params
-    //     const flashcards = await Flashcard.find({ deck: deckId })
-    //     console.log(flashcards)
-    //     const flashcardsl = await Flashcard.find({ deck: deckId }).lean()
-    //     console.log('lean', flashcardsl)
-
-    //     const imageCards = await Promise.all(
-    //         flashcards.map(async (card) => {
-    //             if(!card.image) return card
-    //             const command = new GetObjectCommand({
-    //                 Bucket: 'flashstudy-images',
-    //                 Key: card.image
-    //             })
-    //             const url = await getSignedUrl(s3, command, { expiresIn: 300 })
-    //             return {
-    //                 ...card, imageUrl: url
-    //             }
-    //         })
-    //     )
-
-    //     res.json(imageCards)
-    // }
-    // catch(error) {
-    //     res.status(500).json({ message: "Failed to fetch flashcards", error})
-    // }
-})
-
 router.put('/:deckId/:flashcardId', authMiddleWare, async (req: AuthRequest, res: Response) => {
     try{
         const { deckId, flashcardId } = req.params
@@ -105,7 +76,7 @@ router.delete('/:deckId/:flashcardId', authMiddleWare, async (req: AuthRequest, 
         if(flashcard.image && flashcard.image.includes('.com')){
             const imageKey = flashcard?.image.split('.com/')[1]
             const command = new DeleteObjectCommand({
-                Bucket: 'flashstudy-images',
+                Bucket: process.env.S3_BUCKET_NAME,
                 Key: imageKey
             })
             await s3.send(command)

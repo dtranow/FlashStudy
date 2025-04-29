@@ -1,10 +1,10 @@
 import { connectDB, s3 } from '../connections'
-import { S3Client, ListObjectsV2Command, DeleteObjectsCommand } from '@aws-sdk/client-s3'
+import { ListObjectsV2Command, DeleteObjectsCommand } from '@aws-sdk/client-s3'
 import Flashcard from '../models/flashcardModel'
 
 async function cleanupOrphans() {
     await connectDB()
-    const list = await s3.send(new ListObjectsV2Command({Bucket: 'flashstudy-images'}))
+    const list = await s3.send(new ListObjectsV2Command({Bucket: process.env.S3_BUCKET_NAME}))
     const keys = (list.Contents || []).map(obj => obj.Key!).filter(Boolean)
 
     const cards = await Flashcard.find({ image: {$exists: true}}).lean()
@@ -21,7 +21,7 @@ async function cleanupOrphans() {
     for(let i = 0; i < orphanKeys.length; i += 1000){
         let orphan = orphanKeys.slice(i,i+1000).map(Key => ({ Key }))
         await s3.send(new DeleteObjectsCommand({
-            Bucket: 'flashstudy-images',
+            Bucket: process.env.S3_BUCKET_NAME,
             Delete: {Objects: orphan}
         }))
         totalDeleted += orphan.length

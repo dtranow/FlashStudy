@@ -15,13 +15,13 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
         const time = Date.now()
         const fileName = `flashcard/${time}-${file.originalname}`
         const command = new PutObjectCommand({
-            Bucket: 'flashstudy-images',
+            Bucket: process.env.S3_BUCKET_NAME,
             Key: fileName,
             Body: file.buffer,
             ContentType: file.mimetype,
         })
         await s3.send(command)
-        const imageUrl = `https://flashstudy-images.s3.us-east-2.amazonaws.com/${fileName}`
+        const imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`
         res.json({ imageUrl, Key: fileName })
     }
     catch(error){
@@ -34,7 +34,7 @@ router.delete('/deleteImage', async (req: Request, res: Response) => {
     const { key } = req.body
     try{
         const command = new DeleteObjectCommand({
-            Bucket: 'flashstudy-images',
+            Bucket: process.env.S3_BUCKET_NAME,
             Key: key
         })
         await s3.send(command)
