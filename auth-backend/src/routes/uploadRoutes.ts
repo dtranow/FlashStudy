@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express'
 import upload from '../upload'
-import { s3 } from '../server'
+import { s3 } from '../connections'
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 
 const router = express.Router()

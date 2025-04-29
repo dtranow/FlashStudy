@@ -2,7 +2,7 @@ import express, { Response } from "express";
 import authMiddleWare, { AuthRequest } from "../middleware";
 import Flashcard from "../models/flashcardModel";
 import Deck from "../models/deckModel";
-import { s3 } from '../server'
+import { s3 } from '../connections'
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 const router = express.Router()
