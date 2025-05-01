@@ -58,7 +58,6 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
             res.status(403).json({ message: "Unauthorized access to this deck"})
             return
         }
-        console.log('pre presign', deck.flashcards)
         deck.flashcards = await Promise.all(
             deck.flashcards.map(async (card: any) => {
                 if(!card.image) return card
@@ -70,7 +69,6 @@ router.get('/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
                 return {...card, imageUrl: signedUrl}
             })
         )
-        console.log('post presign', deck.flashcards)
         res.json(deck)
     }
     catch(error) {

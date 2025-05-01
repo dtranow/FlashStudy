@@ -46,11 +46,11 @@ const Flashcard: React.FC<props> = ({ID, question, answer, flipped, setFlipped, 
           {edit ? (
             <>
               <div className='flashcard-front'>
-                <input value={newQuestion} onChange={(e) => setNewQuestion(e.target.value)}/>
+                <input className='edit-input' value={newQuestion} maxLength={75} onChange={(e) => setNewQuestion(e.target.value)}/>
                 {isComplete && <span className='checkmark'>✔️</span>}
               </div>
               <div className='flashcard-back'>
-                <input value={newAnswer} onChange={(e) => setNewAnswer(e.target.value)}/>
+                <input className='edit-input' value={newAnswer} maxLength={300} onChange={(e) => setNewAnswer(e.target.value)}/>
                 {isComplete && <span className='checkmark'>✔️</span>}
               </div>
             </>

@@ -340,10 +340,14 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                     border: '2px dashed #ccc',
                     padding: '1rem',
                     textAlign: 'center',
+                    width: '70%',
+                    maxWidth: '400px',
+                    margin: '2rem auto',
+                    maxHeight: '200px'
                   }}
                   >
                   {preview ?
-                    <img src={preview} alt="preview" style={{ maxWidth: '100%'}}/> :
+                    <img src={preview} alt="preview" style={{ maxWidth: '100%', maxHeight: '100%'}}/> :
                     <p>Drag and drop an image or click to select file</p>
                 }
                   <input type='file' accept='image/jpeg, image/png, image/webp' onChange={e => {handleFileSelect(e.target.files?.[0])}}/>

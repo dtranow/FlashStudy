@@ -5,7 +5,14 @@
   max-width: 500px;
   margin: 20px auto;
 }
-  
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
 .flashcard-container {
   position: relative;
@@ -16,6 +23,14 @@
   perspective: 1000px;
 }
 
+.flashcard-form {
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+  min-height: 750px;
+}
+
 .flashcard {
   width: 550px;
   height: 350px;
@@ -23,257 +38,275 @@
   cursor: pointer;
   position: relative;
 }
-  
-  .flashcard-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 0.6s;
-    transform-style: preserve-3d;
-  }
-  
-  .flashcard-front,
-  .flashcard-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
-    border: 1px solid #ccc;
-    background: #f0f0f0;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    overflow-wrap: break-word;
-    white-space: normal;
-    word-break: break-word;
-  }
 
-  .flashcard-front::after {
-    content: "Q";
-    position: absolute;
-    top: 5px;
-    left: 8px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #1863af;
-  }
+.flashcard-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
 
-  .flashcard-back::after {
-    content: "A";
-    position: absolute;
-    top: 5px;
-    left: 8px;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #d32f2f;
-  }
-  
-  .flashcard-back {
-    transform: rotateY(180deg);
-  }
+.flashcard-front,
+.flashcard-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.7rem;
+  border: 1px solid #ccc;
+  background: #f0f0f0;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow-wrap: break-word;
+  white-space: normal;
+  word-break: break-word;
+}
 
-  .flashcard.flipped .flashcard-inner {
-    transform: rotateY(180deg);
-  }
-  
-  .flashcard-nav {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .flashcard-nav button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    margin: 0 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: transform 0.2s ease-in-out;
-  }
-  
-  .flashcard-nav button:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
+.flashcard-front::after {
+  content: "Q";
+  position: absolute;
+  top: 2px;
+  left: 14px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1863af;
+}
 
-  .flashcard-nav button:hover {
-    background-color: #145a9e;
-    transform: scale(1.08);
-  }
+.flashcard-back::after {
+  content: "A";
+  position: absolute;
+  top: 2px;
+  left: 14px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #d32f2f;
+}
 
-  .checkmark {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    font-size: 2rem;
-    z-index: 1;
-  }
+.flashcard-back {
+  transform: rotateY(180deg);
+}
 
-  .deck-options {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    flex-wrap: wrap;
-    margin-top: 20px;
-  }
-  
-  .deckpage-cards {
-    flex: 1;
-    max-width: 300px;
-    min-width: 200px;
-    text-align: center;
-    padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  
-  .deckpage-cards:hover {
-    transform: scale(1.05);
-  }
+.flashcard.flipped .flashcard-inner {
+  transform: rotateY(180deg);
+}
+
+.edit-input {
+  width: 85%;
+  padding: 8px 10px;
+  font-size: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: inset 1px 1px 4px rgba(0,0,0,0.1);
+  transition: all 0.2s ease-in-out;
+  background-color: #fff;
+  color: #333;
+  font-family: 'Segoe UI';
+}
+
+.edit-input:focus {
+  border-color: #1976d2;
+  box-shadow: 0 0 4px rgba(23, 110, 197, 0.5);
+  outline: none;
+  background-color: #fefefe;
+}
+
+.flashcard-nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.flashcard-nav button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin: 0 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.flashcard-nav button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.flashcard-nav button:hover {
+  background-color: #145a9e;
+  transform: scale(1.08);
+}
+
+.checkmark {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 2rem;
+  z-index: 1;
+}
+
+.deck-options {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.deckpage-cards {
+  flex: 1;
+  max-width: 300px;
+  min-width: 200px;
+  text-align: center;
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.deckpage-cards:hover {
+  transform: scale(1.05);
+}
 
 
-  .back-btn {
-    background: #1976d2;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: transform background-color 0.2s;
-  }
-  
-  .del-btn {
-    background: #d32f2f;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: transform background-color 0.2s;
-  }
+.back-btn {
+  background: #1976d2;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform background-color 0.2s;
+}
 
-  .complete-btn {
-    background-color: #007bff;
-  }
-  
-  .create-flashcard-btn{
-    background-color: #007bff;
-    margin-right: 25px;
-  }
-  
-  .back-btn:hover, .del-btn:hover, .complete-btn:hover {
-    background-color: #bbb;
-    transform: scale(1.05);
-  }
+.del-btn {
+  background: #d32f2f;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform background-color 0.2s;
+}
 
-  .edit-btn {
-    position: absolute;
-    top: -10px;
-    right: -20px;
-    background: #1976d2;
-    color: white;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    z-index: 2;
-    transition: transform, background-color 0.2s;
-  }
-  
-  .edit-btn:hover {
-    background: #145a9e;
-    transform: scale(1.04);
-  }
-  
-  .edit-input {
-    width: 90%;
-    padding: 8px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
+.complete-btn {
+  background-color: #007bff;
+}
 
-  .flashcard-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+.create-flashcard-btn {
+  background-color: #007bff;
+  margin-right: 25px;
+}
 
-  .flashcard-table th,
-  .flashcard-table td {
-    padding: 8px;
-    border: 1px solid #ddd;
-    text-align: left;
-    border-radius: 6px;
-  }
+.back-btn:hover,
+.del-btn:hover,
+.complete-btn:hover {
+  background-color: #bbb;
+  transform: scale(1.06);
+}
 
-  .flashcard-table td {
-    max-width: 500px;
-    overflow-wrap: break-word;
-  }
+.edit-btn {
+  position: absolute;
+  top: -28px;
+  right: -20px;
+  font-size: 18px;
+  background: #1976d2;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform, background-color 0.2s;
+}
 
-  .flashcard-table th {
-    text-align: center;
-  }
+.edit-btn:hover {
+  background: #145a9e;
+  transform: scale(1.04);
+}
 
-  .flashcard-row:hover {
-    transition: background-color 0.3s ease;
-  }
+.flashcard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-  .flashcard-row:hover td {
+.flashcard-table th,
+.flashcard-table td {
+  padding: 8px;
+  border: 1px solid #ddd;
+  text-align: left;
+  border-radius: 6px;
+}
+
+.flashcard-table td {
+  max-width: 420px;
+  overflow-wrap: break-word;
+}
+
+.flashcard-table th {
+  text-align: center;
+}
+
+.flashcard-row:hover {
+  transition: background-color 0.3s ease;
+}
+
+.flashcard-row:hover td {
   background-color: rgba(0, 0, 0, 0.05);
   border: 1px solid #ddd;
-  }
-  
-  .flashcard-row .actions-table {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    display: flex;
-    align-items: center;
-  }
-  
-  .flashcard-row:hover .actions-table {
-    background-color: transparent;
-    opacity: 1;
-  }
-  
-  .table-delete-btn, .table-edit-btn {
-    display: inline-block;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2em;
-    transition: transform 0.3s ease;
-  }
+}
 
-  .table-delete-btn:focus, .table-edit-btn:focus {
-    outline: none;
-  }
+.flashcard-row .actions-table {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+}
 
-  .table-save-btn {
-    background-color: #8ec3fc;
-    transition: transform 0.3s ease;
-  }
+.flashcard-row:hover .actions-table {
+  background-color: transparent;
+  opacity: 1;
+}
 
-  .table-save-btn:hover {
-    transform: scale(1.05);
-  }
+.table-delete-btn,
+.table-edit-btn {
+  display: inline-block;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  transition: transform 0.3s ease;
+}
 
-  .table-delete-btn:hover, .table-edit-btn:hover {
-    transform: scale(1.24);
-  }
+.table-delete-btn:focus,
+.table-edit-btn:focus {
+  outline: none;
+}
 
-  .actions-header {
-    border: none;
-    padding: 0;
-  }
-  
+.table-save-btn {
+  background-color: #8ec3fc;
+  transition: transform 0.3s ease;
+}
+
+.table-save-btn:hover {
+  transform: scale(1.05);
+}
+
+.table-delete-btn:hover,
+.table-edit-btn:hover {
+  transform: scale(1.24);
+}
+
+.actions-header {
+  border: none;
+  padding: 0;
+}
+
 .flashcard-table input,
 .flashcard-table textarea {
   width: 100%;
@@ -292,63 +325,64 @@
   outline: none;
 }
 
-  .flashcard-table textarea {
-    min-height: 100px;
-    max-width: 100px;
-    resize: vertical;
-  }
+.flashcard-table textarea {
+  min-height: 100px;
+  max-width: 100px;
+  resize: vertical;
+}
 
-  .image-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.527);
-    display: flex;
-    justify-content: center;
+.image-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.527);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.image-modal-content {
+  position: relative;
+  background: rgb(214, 214, 214);
+  padding: 22px;
+  border-radius: 10px;
+  max-width: 92%;
+  max-height: 92%;
+  overflow: auto;
+}
+
+.image-modal-content img {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.close-modal-btn:focus {
+  outline: none;
+}
+
+@media (max-width: 500px) {
+  .deck-options {
+    flex-direction: column;
     align-items: center;
-    z-index: 999;
-  }
-  
-  .image-modal-content {
-    position: relative;
-    background: rgb(214, 214, 214);
-    padding: 22px;
-    border-radius: 10px;
-    max-width: 92%;
-    max-height: 92%;
-    overflow: auto;
-  }
-  
-  .image-modal-content img {
-    width: 100%;
-    height: auto;
-    max-height: 80vh;
-    object-fit: contain;
-  }
-  
-  .close-modal-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: transparent;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-  }
-  .close-modal-btn:focus {
-    outline: none;
   }
 
-  @media (max-width: 500px) {
-    .deck-options {
-      flex-direction: column;
-      align-items: center;
-    }
-  
-    .btn-container {
-      flex-direction: column;
-      align-items: center;
-    }
+  .btn-container {
+    flex-direction: column;
+    align-items: center;
   }
+}
