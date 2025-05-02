@@ -1,14 +1,14 @@
-import React, {useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { VscArrowRight, VscArrowLeft } from 'react-icons/vsc'
 import axios from 'axios'
 import SidebarDeckList from './SidebarDeckList'
 import '../Dashboard.css'
 
 interface props {
-    isOpen: boolean;
-    toggleSidebar: () => void;
-    handleLogout: () => void;
-    onDeckClick?: (deckId: string) => void;
+  isOpen: boolean;
+  toggleSidebar: () => void;
+  handleLogout: () => void;
+  onDeckClick?: (deckId: string) => void;
 }
 
 interface Deck {
@@ -21,13 +21,13 @@ const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, onDeckC
   const [decks, setDecks] = useState<Deck[]>([])
   const [name, setName] = useState<string>('')
   const jwt = localStorage.getItem('token')
-  const headers = jwt ? { Authorization: `Bearer ${jwt}` } : {}; 
+  const headers = jwt ? { Authorization: `Bearer ${jwt}` } : {};
 
   const fetchDecks = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/decks', {headers}
+      const res = await axios.get('http://localhost:5000/api/decks', { headers }
       )
-      if(Array.isArray(res.data)){
+      if (Array.isArray(res.data)) {
         const formatDecks = res.data.map(deck => {
           const numCards = deck.flashcards?.length || 0;
           const numCompleted = deck.completeCount
@@ -39,21 +39,21 @@ const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, onDeckC
         })
         setDecks(formatDecks)
       }
-      else{
+      else {
         setDecks([])
       }
     }
-    catch(error) {
+    catch (error) {
       console.error("Failed to fetch decks", error)
     }
   }
 
   const fetchName = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/auth/profile', {headers})
+      const res = await axios.get('http://localhost:5000/api/auth/profile', { headers })
       setName(res.data.user?.name)
     }
-    catch(error) {
+    catch (error) {
       console.error("Failed to fetch name ", error)
     }
   }
@@ -63,20 +63,23 @@ const Sidebar: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout, onDeckC
     fetchName()
   }, [])
 
-  
+
   return (
-      <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
-        <button className='close-btn' onClick={toggleSidebar}>{isOpen ? <VscArrowLeft/> : <VscArrowRight/>}</button>
-        <div className='user-info'>
-          <h2>FlashStudy</h2>
-          <h3>Welcome, {name}</h3>
+    <div className={`sidebar ${isOpen ? 'open' : 'closed'}`}>
+      <button className='close-btn' onClick={toggleSidebar}>{isOpen ? <VscArrowLeft /> : <VscArrowRight />}</button>
+      <div className='user-info'>
+        <div className='title-bar'>
+          FlashStudy
+          <span className='hover-title' data-text="FlashStudy"></span>
         </div>
-        <nav className='flashcard-list'>
-          <SidebarDeckList decks={decks || []} onDeckClick={onDeckClick ?? (() => {})}/>
-        </nav>
-        <button className='log-out' onClick={handleLogout}>Logout</button>
-      </div>  
-      )
+        <h3>Welcome, {name}</h3>
+      </div>
+      <nav className='flashcard-list'>
+        <SidebarDeckList decks={decks || []} onDeckClick={onDeckClick ?? (() => { })} />
+      </nav>
+      <button className='log-out' onClick={handleLogout}>Logout</button>
+    </div>
+  )
 }
 
 export default Sidebar

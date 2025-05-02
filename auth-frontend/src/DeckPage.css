@@ -57,7 +57,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   border: 1px solid #ccc;
   background: #f0f0f0;
   border-radius: 8px;
@@ -66,6 +66,10 @@
   overflow-wrap: break-word;
   white-space: normal;
   word-break: break-word;
+}
+
+.flashcard-front{
+  font-size: 1.9rem;
 }
 
 .flashcard-front::after {

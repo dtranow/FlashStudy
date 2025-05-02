@@ -53,6 +53,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
   const { deckId } = useParams<{ deckId: string }>()
 
   const cardNameInputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const fetchDeck = async () => {
     try {
@@ -104,6 +105,9 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
       setFlashcardDescription('')
       setImageKey('')
       setPreview('')
+      if(fileInputRef.current){
+        fileInputRef.current.value = ''
+      }
     }
     else {
       console.error("Failed to create flashcard")
@@ -350,7 +354,7 @@ const DeckPage: React.FC<props> = ({ isOpen, toggleSidebar, handleLogout }) => {
                     <img src={preview} alt="preview" style={{ maxWidth: '100%', maxHeight: '100%'}}/> :
                     <p>Drag and drop an image or click to select file</p>
                 }
-                  <input type='file' accept='image/jpeg, image/png, image/webp' onChange={e => {handleFileSelect(e.target.files?.[0])}}/>
+                  <input ref={fileInputRef} type='file' accept='image/jpeg, image/png, image/webp' onChange={e => {handleFileSelect(e.target.files?.[0])}}/>
                 </div>
                 <button className='create-flashcard-btn'>Create Flashcard</button>
                 <FormControlLabel
