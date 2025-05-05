@@ -19,6 +19,7 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
             Key: fileName,
             Body: file.buffer,
             ContentType: file.mimetype,
+            ServerSideEncryption: 'AES256'
         })
         await s3.send(command)
         const imageUrl = `https://${process.env.S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`
